@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const ContactContainer = styled.section`
   padding: 6rem 0;
-  background: ${props => props.theme.colors.surface};
+  background: ${props => props.theme.colors.background};
   position: relative;
   overflow: hidden;
 
@@ -15,7 +15,7 @@ const ContactContainer = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(167, 139, 250, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
     z-index: 1;
   }
 `;

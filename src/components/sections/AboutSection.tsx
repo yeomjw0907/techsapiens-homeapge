@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const AboutContainer = styled.section`
   padding: 6rem 0;
-  background: ${props => props.theme.colors.surface};
+  background: ${props => props.theme.colors.background};
   position: relative;
 `;
 

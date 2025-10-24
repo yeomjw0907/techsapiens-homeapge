@@ -31,7 +31,7 @@ CREATE TABLE inquiries (
   budget VARCHAR(100),
   timeline VARCHAR(100),
   privacy_agreement BOOLEAN DEFAULT false,
-  status VARCHAR(20) NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'in_progress', 'completed')),
+  status VARCHAR(20) NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'in_progress', 'completed', 'rejected')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

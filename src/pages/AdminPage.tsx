@@ -498,6 +498,8 @@ const AdminPage: React.FC = () => {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(false);
   const [showAddProject, setShowAddProject] = useState(false);
+  const [showEditProject, setShowEditProject] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [newProject, setNewProject] = useState({
     title: '',
     description: '',
@@ -647,6 +649,57 @@ const AdminPage: React.FC = () => {
     }));
   };
 
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    setNewProject({
+      title: project.title,
+      description: project.description,
+      client: project.client,
+      status: project.status,
+      start_date: project.start_date,
+      end_date: project.end_date || '',
+      tech_stack: project.tech_stack || [],
+      achievements: project.achievements || [],
+      icon: project.icon || '',
+      category: project.category || ''
+    });
+    setShowEditProject(true);
+  };
+
+  const handleUpdateProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProject) return;
+    
+    try {
+      const projectData = {
+        ...newProject,
+        tech_stack: newProject.tech_stack,
+        achievements: newProject.achievements
+      };
+      
+      await updateProject(editingProject.id, projectData);
+      setProjects(projects.map(p => p.id === editingProject.id ? { ...p, ...projectData } : p));
+      setShowEditProject(false);
+      setEditingProject(null);
+      setNewProject({
+        title: '',
+        description: '',
+        client: '',
+        status: 'active',
+        start_date: '',
+        end_date: '',
+        tech_stack: [],
+        achievements: [],
+        icon: '',
+        category: ''
+      });
+      alert('프로젝트가 성공적으로 수정되었습니다.');
+    } catch (error) {
+      console.error('Error updating project:', error);
+      alert('프로젝트 수정 중 오류가 발생했습니다.');
+    }
+  };
+
   if (!isLoggedIn) {
     return (
       <AdminContainer>
@@ -725,7 +778,7 @@ const AdminPage: React.FC = () => {
                     </ProjectMeta>
                     <ProjectDescription>{project.description}</ProjectDescription>
                     <ProjectActions>
-                      <ActionButton $variant="primary">수정</ActionButton>
+                      <ActionButton $variant="primary" onClick={() => handleEditProject(project)}>수정</ActionButton>
                       <ActionButton $variant="secondary">상세</ActionButton>
                       <ActionButton $variant="danger" onClick={() => handleDeleteProject(project.id)}>삭제</ActionButton>
                     </ProjectActions>
@@ -788,7 +841,8 @@ const AdminPage: React.FC = () => {
                         <option value="new">컨택전</option>
                         <option value="contacted">컨택중</option>
                         <option value="in_progress">프로젝트 진행</option>
-                        <option value="completed">프로젝트 불가</option>
+                        <option value="completed">프로젝트 완료</option>
+                        <option value="rejected">프로젝트 불가</option>
                       </StatusSelect>
                       <ActionButton $variant="secondary">상세보기</ActionButton>
                       <ActionButton $variant="danger" onClick={() => handleDeleteInquiry(inquiry.id)}>삭제</ActionButton>
@@ -928,6 +982,139 @@ const AdminPage: React.FC = () => {
 
               <SubmitButton type="submit">
                 프로젝트 추가
+              </SubmitButton>
+            </Form>
+          </ModalContainer>
+        </ModalOverlay>
+      )}
+
+      {showEditProject && (
+        <ModalOverlay onClick={() => setShowEditProject(false)}>
+          <ModalContainer onClick={(e) => e.stopPropagation()}>
+            <ModalHeader>
+              <ModalTitle>프로젝트 수정</ModalTitle>
+              <CloseButton onClick={() => setShowEditProject(false)}>×</CloseButton>
+            </ModalHeader>
+            
+            <Form onSubmit={handleUpdateProject}>
+              <FormRow>
+                <FormGroup>
+                  <Label>프로젝트 제목 *</Label>
+                  <ModalInput
+                    type="text"
+                    name="title"
+                    value={newProject.title}
+                    onChange={handleProjectInputChange}
+                    placeholder="프로젝트 제목을 입력하세요"
+                    required
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label>클라이언트 *</Label>
+                  <ModalInput
+                    type="text"
+                    name="client"
+                    value={newProject.client}
+                    onChange={handleProjectInputChange}
+                    placeholder="클라이언트명을 입력하세요"
+                    required
+                  />
+                </FormGroup>
+              </FormRow>
+
+              <FormGroup>
+                <Label>프로젝트 설명 *</Label>
+                <TextArea
+                  name="description"
+                  value={newProject.description}
+                  onChange={handleProjectInputChange}
+                  placeholder="프로젝트에 대한 상세 설명을 입력하세요"
+                  required
+                />
+              </FormGroup>
+
+              <FormRow>
+                <FormGroup>
+                  <Label>시작일 *</Label>
+                  <ModalInput
+                    type="date"
+                    name="start_date"
+                    value={newProject.start_date}
+                    onChange={handleProjectInputChange}
+                    required
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label>종료일</Label>
+                  <ModalInput
+                    type="date"
+                    name="end_date"
+                    value={newProject.end_date}
+                    onChange={handleProjectInputChange}
+                  />
+                </FormGroup>
+              </FormRow>
+
+              <FormRow>
+                <FormGroup>
+                  <Label>상태 *</Label>
+                  <Select
+                    name="status"
+                    value={newProject.status}
+                    onChange={handleProjectInputChange}
+                    required
+                  >
+                    <option value="active">진행중</option>
+                    <option value="completed">완료</option>
+                    <option value="pending">대기</option>
+                  </Select>
+                </FormGroup>
+                <FormGroup>
+                  <Label>카테고리</Label>
+                  <ModalInput
+                    type="text"
+                    name="category"
+                    value={newProject.category}
+                    onChange={handleProjectInputChange}
+                    placeholder="예: 웹 개발, 모바일 앱, 시스템 구축"
+                  />
+                </FormGroup>
+              </FormRow>
+
+              <FormRow>
+                <FormGroup>
+                  <Label>아이콘</Label>
+                  <ModalInput
+                    type="text"
+                    name="icon"
+                    value={newProject.icon}
+                    onChange={handleProjectInputChange}
+                    placeholder="예: 📊, 🚀, 💻"
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label>기술 스택 (쉼표로 구분)</Label>
+                  <ModalInput
+                    type="text"
+                    value={newProject.tech_stack.join(', ')}
+                    onChange={handleTechStackChange}
+                    placeholder="예: React, Node.js, MongoDB"
+                  />
+                </FormGroup>
+              </FormRow>
+
+              <FormGroup>
+                <Label>주요 성과 (쉼표로 구분)</Label>
+                <ModalInput
+                  type="text"
+                  value={newProject.achievements.join(', ')}
+                  onChange={handleAchievementsChange}
+                  placeholder="예: 성능 50% 향상, 사용자 만족도 95% 달성"
+                />
+              </FormGroup>
+
+              <SubmitButton type="submit">
+                프로젝트 수정
               </SubmitButton>
             </Form>
           </ModalContainer>

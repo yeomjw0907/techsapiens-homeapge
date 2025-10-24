@@ -690,6 +690,32 @@ const RecipeButton = styled(motion.button)`
   }
 `;
 
+const QuoteSuccessMessage = styled(motion.div)`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(16, 185, 129, 0.95));
+  color: white;
+  padding: 2rem 3rem;
+  border-radius: ${props => props.theme.borderRadius.lg};
+  text-align: center;
+  z-index: 2000;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+`;
+
+const QuoteSuccessTitle = styled.h3`
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+`;
+
+const QuoteSuccessText = styled.p`
+  font-size: 1.1rem;
+  margin: 0;
+  line-height: 1.6;
+`;
+
 // 사용하지 않는 스타일 컴포넌트들 제거됨
 
 interface HeroSectionProps {
@@ -728,6 +754,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
   });
   const [typingText, setTypingText] = useState('');
   const [typingIndex, setTypingIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState('');
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [showQuoteSuccess, setShowQuoteSuccess] = useState(false);
 
   const interviewQuestions = [
     {
@@ -752,7 +781,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     }
   ];
 
-  const placeholderText = "예: 온라인 쇼핑몰 개발이 필요합니다. 사용자 관리, 결제 시스템, 상품 관리 기능이 포함되어야 합니다.";
+  const placeholderText = "자사 홈페이지 리뉴얼";
 
   // 타이핑 애니메이션
   useEffect(() => {
@@ -760,7 +789,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
       const timer = setTimeout(() => {
         setTypingText(prev => prev + placeholderText[typingIndex]);
         setTypingIndex(prev => prev + 1);
-      }, 50);
+      }, 100);
       return () => clearTimeout(timer);
     }
   }, [typingIndex, placeholderText]);
@@ -786,51 +815,50 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
   };
 
   const handleInterviewAnswer = (answer: string) => {
-    const currentQuestion = interviewQuestions[interviewData.currentStep - 1];
+    setSelectedAnswer(answer);
     
-    if (currentQuestion.type === 'select') {
-      if (currentQuestion.question.includes('프로젝트')) {
-        if (answer === '기타') {
-          setCustomProjectType('');
-          return; // 기타 선택 시 커스텀 입력 대기
-        }
-        setInterviewData(prev => ({ ...prev, projectType: answer }));
-      } else if (currentQuestion.question.includes('예산')) {
-        setInterviewData(prev => ({ ...prev, budget: answer }));
-      } else if (currentQuestion.question.includes('기간')) {
-        setInterviewData(prev => ({ ...prev, timeline: answer }));
-      }
-    } else {
-      const features = answer.split(',').map(f => f.trim()).filter(f => f);
-      setInterviewData(prev => ({ ...prev, features }));
+    if (interviewData.currentStep === 1 && answer === '기타') {
+      setShowCustomInput(true);
+      return;
     }
+  };
 
-    if (interviewData.currentStep < interviewQuestions.length) {
-      setInterviewData(prev => ({ ...prev, currentStep: prev.currentStep + 1 }));
-    } else {
-      // 인터뷰 완료 - 레시피 팝업 표시
-      setShowRecipePopup(true);
+  const handleNextStep = () => {
+    if (selectedAnswer) {
+      const currentQuestion = interviewQuestions[interviewData.currentStep - 1];
+      
+      if (currentQuestion.type === 'select') {
+        if (currentQuestion.question.includes('프로젝트')) {
+          setInterviewData(prev => ({ ...prev, projectType: selectedAnswer }));
+        } else if (currentQuestion.question.includes('예산')) {
+          setInterviewData(prev => ({ ...prev, budget: selectedAnswer }));
+        } else if (currentQuestion.question.includes('기간')) {
+          setInterviewData(prev => ({ ...prev, timeline: selectedAnswer }));
+        }
+      } else {
+        const features = selectedAnswer.split(',').map(f => f.trim()).filter(f => f);
+        setInterviewData(prev => ({ ...prev, features }));
+      }
+
+      if (interviewData.currentStep < interviewQuestions.length) {
+        setInterviewData(prev => ({ ...prev, currentStep: prev.currentStep + 1 }));
+        setSelectedAnswer('');
+        setShowCustomInput(false);
+      } else {
+        // 인터뷰 완료 - 레시피 팝업 표시
+        setShowRecipePopup(true);
+      }
     }
   };
 
   const handleCustomProjectType = (value: string) => {
     setCustomProjectType(value);
-    if (value.trim()) {
-      setInterviewData(prev => ({ ...prev, projectType: value }));
-      setInterviewData(prev => ({ ...prev, currentStep: prev.currentStep + 1 }));
-    }
+    setSelectedAnswer(value);
   };
 
   const handleFeaturesInput = (value: string) => {
     setFeaturesInput(value);
-  };
-
-  const handleNextStep = () => {
-    if (interviewData.currentStep === 4 && featuresInput.trim()) {
-      const features = featuresInput.split(',').map(f => f.trim()).filter(f => f);
-      setInterviewData(prev => ({ ...prev, features }));
-      setShowRecipePopup(true);
-    }
+    setSelectedAnswer(value);
   };
 
   const handlePreviousStep = () => {
@@ -842,8 +870,22 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
   const handleRecipeSubmit = () => {
     // 여기서 Supabase에 새로운 문의 저장
     console.log('Recipe submitted:', { ...interviewData, ...recipeData });
+    setShowQuoteSuccess(true);
+    setTimeout(() => {
+      setShowQuoteSuccess(false);
+      setShowRecipePopup(false);
+      setShowSimilarPortfolio(true);
+    }, 3000);
+  };
+
+  const handleCloseRecipePopup = () => {
     setShowRecipePopup(false);
-    setShowSimilarPortfolio(true);
+  };
+
+  const handleRecipePopupClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      handleCloseRecipePopup();
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -958,7 +1000,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                     type="text"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="예: 온라인 쇼핑몰 개발이 필요합니다. 사용자 관리, 결제 시스템, 상품 관리 기능이 포함되어야 합니다."
+                    placeholder=""
                     disabled={isGenerating}
                   />
                   <SendButton
@@ -966,13 +1008,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                     disabled={!prompt.trim() || isGenerating}
                   >
                     {isGenerating ? (
-                      <LoadingContainer>
-                        <LoadingSpinner>
-                          <LoadingDot />
-                          <LoadingDot />
-                          <LoadingDot />
-                        </LoadingSpinner>
-                      </LoadingContainer>
+                      <LoadingSpinner>
+                        <LoadingDot />
+                        <LoadingDot />
+                        <LoadingDot />
+                      </LoadingSpinner>
                     ) : '→'}
                   </SendButton>
                   {isGenerating && <BacklightOverlay animate={{ opacity: 1 }} />}
@@ -1039,6 +1079,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                         <OptionButton
                           key={index}
                           onClick={() => handleInterviewAnswer(option)}
+                          style={{
+                            backgroundColor: selectedAnswer === option ? '#6366f1' : undefined,
+                            borderColor: selectedAnswer === option ? '#6366f1' : undefined
+                          }}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
@@ -1046,19 +1090,37 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                         </OptionButton>
                       ))}
                     </OptionGrid>
-                    {interviewData.currentStep === 1 && customProjectType === '' && (
+                    {showCustomInput && (
                       <CustomInput
                         type="text"
                         placeholder="프로젝트 유형을 직접 입력해주세요"
                         value={customProjectType}
-                        onChange={(e) => setCustomProjectType(e.target.value)}
+                        onChange={(e) => handleCustomProjectType(e.target.value)}
                         onKeyPress={(e) => {
                           if (e.key === 'Enter' && customProjectType.trim()) {
-                            handleCustomProjectType(customProjectType);
+                            handleNextStep();
                           }
                         }}
                       />
                     )}
+                    <NavigationButtons>
+                      <NavButton
+                        onClick={handlePreviousStep}
+                        disabled={interviewData.currentStep === 1}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        이전
+                      </NavButton>
+                      <NextButton
+                        onClick={handleNextStep}
+                        disabled={!selectedAnswer}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        다음
+                      </NextButton>
+                    </NavigationButtons>
                   </>
                 ) : (
                   <>
@@ -1067,6 +1129,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                       placeholder={currentQuestion.placeholder}
                       value={featuresInput}
                       onChange={(e) => handleFeaturesInput(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          // 엔터 시 입력폼 확장 (새 줄 추가)
+                          setFeaturesInput(prev => prev + '\n');
+                        }
+                      }}
                     />
                     <NavigationButtons>
                       <NavButton
@@ -1088,19 +1157,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                     </NavigationButtons>
                   </>
                 )}
-
-                {currentQuestion.type === 'select' && (
-                  <NavigationButtons>
-                    <NavButton
-                      onClick={handlePreviousStep}
-                      disabled={interviewData.currentStep === 1}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      이전
-                    </NavButton>
-                  </NavigationButtons>
-                )}
               </InterviewContainer>
             );
           })()}
@@ -1110,6 +1166,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              onClick={handleRecipePopupClick}
             >
               <RecipeContainer
                 initial={{ scale: 0.9, opacity: 0 }}
@@ -1121,6 +1178,22 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                   <RecipeDescription>
                     귀하의 요구사항에 맞는 완벽한 제안서를 만들어드리겠습니다.
                   </RecipeDescription>
+                  <button
+                    onClick={handleCloseRecipePopup}
+                    style={{
+                      position: 'absolute',
+                      top: '1rem',
+                      right: '1rem',
+                      background: 'none',
+                      border: 'none',
+                      color: '#9ca3af',
+                      fontSize: '1.5rem',
+                      cursor: 'pointer',
+                      padding: '0.5rem'
+                    }}
+                  >
+                    ×
+                  </button>
                 </RecipeHeader>
 
                 <RecipeContent>
@@ -1199,11 +1272,25 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    제안서 받기
+                    견적서 받기
                   </RecipeButton>
                 </RecipeActions>
               </RecipeContainer>
             </RecipePopup>
+          )}
+
+          {showQuoteSuccess && (
+            <QuoteSuccessMessage
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+            >
+              <QuoteSuccessTitle>✅ 견적서 요청 완료</QuoteSuccessTitle>
+              <QuoteSuccessText>
+                영업일 기준 3일 이내에 견적서를 송부해드리겠습니다.<br />
+                감사합니다.
+              </QuoteSuccessText>
+            </QuoteSuccessMessage>
           )}
 
           {showSimilarPortfolio && (

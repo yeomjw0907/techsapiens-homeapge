@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
-const HeaderContainer = styled(motion.header)`
+const HeaderContainer = styled(motion.header)<{ scrolled: boolean }>`
   position: fixed;
   top: 0;
   left: 0;

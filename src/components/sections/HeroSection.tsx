@@ -716,6 +716,237 @@ const QuoteSuccessText = styled.p`
   line-height: 1.6;
 `;
 
+const ContactFormContainer = styled(motion.div)`
+  width: 100%;
+  max-width: 800px;
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: 2rem;
+  margin-top: 2rem;
+`;
+
+const ContactFormTitle = styled.h3`
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+`;
+
+const ContactFormGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+`;
+
+const ContactFormField = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ContactFormLabel = styled.label`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+`;
+
+const ContactFormInput = styled.input`
+  padding: 0.75rem;
+  background: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  color: white;
+  font-size: 0.9rem;
+  outline: none;
+
+  &:focus {
+    border-color: ${props => props.theme.colors.primary};
+  }
+
+  &::placeholder {
+    color: ${props => props.theme.colors.textSecondary};
+  }
+`;
+
+const ContactFormCheckbox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  grid-column: 1 / -1;
+`;
+
+const ContactFormCheckboxInput = styled.input`
+  width: 1rem;
+  height: 1rem;
+`;
+
+const ContactFormCheckboxLabel = styled.label`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.9rem;
+  cursor: pointer;
+`;
+
+const ContactFormActions = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+`;
+
+const ContactFormButton = styled(motion.button)`
+  background: ${props => props.theme.colors.gradient};
+  color: white;
+  border: none;
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${props => props.theme.shadows.lg};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const FinalRecipeModal = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+`;
+
+const FinalRecipeContainer = styled(motion.div)`
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  
+  /* 스크롤바 숨김 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+`;
+
+const FinalRecipeHeader = styled.div`
+  padding: 2rem 2rem 1rem;
+  border-bottom: 1px solid ${props => props.theme.colors.border};
+  text-align: center;
+  position: relative;
+`;
+
+const FinalRecipeTitle = styled.h2`
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+`;
+
+const FinalRecipeDescription = styled.p`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 1rem;
+  margin: 0;
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: white;
+  }
+`;
+
+const FinalRecipeContent = styled.div`
+  padding: 2rem;
+`;
+
+const FinalRecipeSection = styled.div`
+  margin-bottom: 2rem;
+`;
+
+const FinalRecipeSectionTitle = styled.h3`
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+`;
+
+const FinalRecipeField = styled.div`
+  margin-bottom: 1rem;
+`;
+
+const FinalRecipeLabel = styled.label`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.5rem;
+`;
+
+const FinalRecipeValue = styled.div`
+  color: white;
+  font-size: 1rem;
+  padding: 0.75rem;
+  background: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+`;
+
+const FinalRecipeActions = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1rem 2rem 2rem;
+`;
+
+const FinalRecipeButton = styled(motion.button)`
+  background: ${props => props.theme.colors.gradient};
+  color: white;
+  border: none;
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex: 1;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${props => props.theme.shadows.lg};
+  }
+`;
+
 // 사용하지 않는 스타일 컴포넌트들 제거됨
 
 interface HeroSectionProps {
@@ -757,6 +988,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [showQuoteSuccess, setShowQuoteSuccess] = useState(false);
+  const [promptFocused, setPromptFocused] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [showFinalRecipe, setShowFinalRecipe] = useState(false);
 
   const interviewQuestions = [
     {
@@ -845,8 +1079,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
         setSelectedAnswer('');
         setShowCustomInput(false);
       } else {
-        // 인터뷰 완료 - 레시피 팝업 표시
-        setShowRecipePopup(true);
+        // 인터뷰 완료 - 연락처 폼 표시
+        setShowContactForm(true);
       }
     }
   };
@@ -867,13 +1101,20 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     }
   };
 
-  const handleRecipeSubmit = () => {
+  const handleContactSubmit = () => {
+    if (recipeData.name && recipeData.company && recipeData.email && recipeData.phone && recipeData.privacyAgreement) {
+      setShowContactForm(false);
+      setShowFinalRecipe(true);
+    }
+  };
+
+  const handleFinalRecipeSubmit = () => {
     // 여기서 Supabase에 새로운 문의 저장
-    console.log('Recipe submitted:', { ...interviewData, ...recipeData });
+    console.log('Final recipe submitted:', { ...interviewData, ...recipeData });
     setShowQuoteSuccess(true);
     setTimeout(() => {
       setShowQuoteSuccess(false);
-      setShowRecipePopup(false);
+      setShowFinalRecipe(false);
       setShowSimilarPortfolio(true);
     }, 3000);
   };
@@ -1000,6 +1241,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                     type="text"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
+                    onFocus={() => setPromptFocused(true)}
+                    onBlur={() => setPromptFocused(false)}
                     placeholder=""
                     disabled={isGenerating}
                   />
@@ -1016,7 +1259,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                     ) : '→'}
                   </SendButton>
                   {isGenerating && <BacklightOverlay animate={{ opacity: 1 }} />}
-                  {!prompt && (
+                  {!prompt && !promptFocused && (
                     <TypingPlaceholder>
                       {typingText}
                       <TypingCursor />
@@ -1125,17 +1368,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                 ) : (
                   <>
                     <TextInput
-                      type="text"
+                      as="textarea"
                       placeholder={currentQuestion.placeholder}
                       value={featuresInput}
                       onChange={(e) => handleFeaturesInput(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          // 엔터 시 입력폼 확장 (새 줄 추가)
-                          setFeaturesInput(prev => prev + '\n');
-                        }
-                      }}
+                      rows={3}
+                      style={{ resize: 'vertical', minHeight: '80px' }}
                     />
                     <NavigationButtons>
                       <NavButton
@@ -1277,6 +1515,156 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                 </RecipeActions>
               </RecipeContainer>
             </RecipePopup>
+          )}
+
+          {showContactForm && (
+            <ContactFormContainer
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <ContactFormTitle>📞 연락처 정보</ContactFormTitle>
+              
+              <ContactFormGrid>
+                <ContactFormField>
+                  <ContactFormLabel>담당자 성함 *</ContactFormLabel>
+                  <ContactFormInput
+                    type="text"
+                    value={recipeData.name}
+                    onChange={(e) => setRecipeData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="홍길동"
+                  />
+                </ContactFormField>
+                
+                <ContactFormField>
+                  <ContactFormLabel>회사명 *</ContactFormLabel>
+                  <ContactFormInput
+                    type="text"
+                    value={recipeData.company}
+                    onChange={(e) => setRecipeData(prev => ({ ...prev, company: e.target.value }))}
+                    placeholder="(주)테크사피엔스"
+                  />
+                </ContactFormField>
+                
+                <ContactFormField>
+                  <ContactFormLabel>이메일 *</ContactFormLabel>
+                  <ContactFormInput
+                    type="email"
+                    value={recipeData.email}
+                    onChange={(e) => setRecipeData(prev => ({ ...prev, email: e.target.value }))}
+                    placeholder="hong@company.com"
+                  />
+                </ContactFormField>
+                
+                <ContactFormField>
+                  <ContactFormLabel>연락처 *</ContactFormLabel>
+                  <ContactFormInput
+                    type="tel"
+                    value={recipeData.phone}
+                    onChange={(e) => setRecipeData(prev => ({ ...prev, phone: e.target.value }))}
+                    placeholder="010-1234-5678"
+                  />
+                </ContactFormField>
+              </ContactFormGrid>
+              
+              <ContactFormCheckbox>
+                <ContactFormCheckboxInput
+                  type="checkbox"
+                  checked={recipeData.privacyAgreement}
+                  onChange={(e) => setRecipeData(prev => ({ ...prev, privacyAgreement: e.target.checked }))}
+                />
+                <ContactFormCheckboxLabel>
+                  개인정보 처리방침에 동의합니다 *
+                </ContactFormCheckboxLabel>
+              </ContactFormCheckbox>
+              
+              <ContactFormActions>
+                <ContactFormButton
+                  onClick={handleContactSubmit}
+                  disabled={!recipeData.name || !recipeData.company || !recipeData.email || !recipeData.phone || !recipeData.privacyAgreement}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  견적서 받기
+                </ContactFormButton>
+              </ContactFormActions>
+            </ContactFormContainer>
+          )}
+
+          {showFinalRecipe && (
+            <FinalRecipeModal
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <FinalRecipeContainer
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+              >
+                <FinalRecipeHeader>
+                  <FinalRecipeTitle>🍳 최종 제안서 레시피</FinalRecipeTitle>
+                  <FinalRecipeDescription>
+                    귀하의 요구사항에 맞는 완벽한 제안서가 준비되었습니다.
+                  </FinalRecipeDescription>
+                  <CloseButton onClick={() => setShowFinalRecipe(false)}>
+                    ×
+                  </CloseButton>
+                </FinalRecipeHeader>
+
+                <FinalRecipeContent>
+                  <FinalRecipeSection>
+                    <FinalRecipeSectionTitle>📋 프로젝트 정보</FinalRecipeSectionTitle>
+                    <FinalRecipeField>
+                      <FinalRecipeLabel>프로젝트 유형</FinalRecipeLabel>
+                      <FinalRecipeValue>{interviewData.projectType}</FinalRecipeValue>
+                    </FinalRecipeField>
+                    <FinalRecipeField>
+                      <FinalRecipeLabel>예상 예산</FinalRecipeLabel>
+                      <FinalRecipeValue>{interviewData.budget}</FinalRecipeValue>
+                    </FinalRecipeField>
+                    <FinalRecipeField>
+                      <FinalRecipeLabel>완료 예상 기간</FinalRecipeLabel>
+                      <FinalRecipeValue>{interviewData.timeline}</FinalRecipeValue>
+                    </FinalRecipeField>
+                    <FinalRecipeField>
+                      <FinalRecipeLabel>주요 기능</FinalRecipeLabel>
+                      <FinalRecipeValue>{interviewData.features.join(', ')}</FinalRecipeValue>
+                    </FinalRecipeField>
+                  </FinalRecipeSection>
+
+                  <FinalRecipeSection>
+                    <FinalRecipeSectionTitle>📞 연락처 정보</FinalRecipeSectionTitle>
+                    <FinalRecipeField>
+                      <FinalRecipeLabel>담당자 성함</FinalRecipeLabel>
+                      <FinalRecipeValue>{recipeData.name}</FinalRecipeValue>
+                    </FinalRecipeField>
+                    <FinalRecipeField>
+                      <FinalRecipeLabel>회사명</FinalRecipeLabel>
+                      <FinalRecipeValue>{recipeData.company}</FinalRecipeValue>
+                    </FinalRecipeField>
+                    <FinalRecipeField>
+                      <FinalRecipeLabel>이메일</FinalRecipeLabel>
+                      <FinalRecipeValue>{recipeData.email}</FinalRecipeValue>
+                    </FinalRecipeField>
+                    <FinalRecipeField>
+                      <FinalRecipeLabel>연락처</FinalRecipeLabel>
+                      <FinalRecipeValue>{recipeData.phone}</FinalRecipeValue>
+                    </FinalRecipeField>
+                  </FinalRecipeSection>
+                </FinalRecipeContent>
+
+                <FinalRecipeActions>
+                  <FinalRecipeButton
+                    onClick={handleFinalRecipeSubmit}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    최종 견적서 제출
+                  </FinalRecipeButton>
+                </FinalRecipeActions>
+              </FinalRecipeContainer>
+            </FinalRecipeModal>
           )}
 
           {showQuoteSuccess && (

@@ -74,9 +74,14 @@ const MetaValue = styled.p`
   font-size: 1.1rem;
 `;
 
-const ProjectImage = styled.div`
+const ProjectImage = styled.div<{ $thumbnailUrl?: string }>`
   height: 400px;
-  background: ${props => props.theme.colors.surfaceLight};
+  background: ${props => props.$thumbnailUrl 
+    ? `url(${props.$thumbnailUrl})` 
+    : props.theme.colors.surfaceLight
+  };
+  background-size: cover;
+  background-position: center;
   border-radius: ${props => props.theme.borderRadius.lg};
   display: flex;
   align-items: center;
@@ -86,7 +91,7 @@ const ProjectImage = styled.div`
   margin-bottom: 3rem;
   position: relative;
   overflow: hidden;
-
+  
   &::before {
     content: '';
     position: absolute;
@@ -94,8 +99,17 @@ const ProjectImage = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, transparent 30%, rgba(99, 102, 241, 0.1) 50%, transparent 70%);
-    animation: shimmer 2s infinite;
+    background: ${props => props.$thumbnailUrl 
+      ? 'rgba(0, 0, 0, 0.3)' 
+      : 'linear-gradient(45deg, transparent 30%, rgba(99, 102, 241, 0.1) 50%, transparent 70%)'
+    };
+    animation: ${props => props.$thumbnailUrl ? 'none' : 'shimmer 2s infinite'};
+    z-index: 1;
+  }
+  
+  > * {
+    position: relative;
+    z-index: 2;
   }
 
   @keyframes shimmer {
@@ -327,8 +341,8 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ onContactClick })
           </ProjectMeta>
         </ProjectHeader>
 
-        <ProjectImage>
-          {project.icon || '📊'}
+        <ProjectImage $thumbnailUrl={project.thumbnail_url}>
+          {!project.thumbnail_url && '📊'}
         </ProjectImage>
 
         <ProjectContent>

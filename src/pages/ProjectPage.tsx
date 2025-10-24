@@ -393,7 +393,7 @@ const ProjectPage: React.FC = () => {
               >
                 <Link to={`/projects/${project.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
         <ProjectImage $thumbnailUrl={project.thumbnail_url}>
-          {!project.thumbnail_url && (project.icon || '📊')}
+          {!project.thumbnail_url && '📊'}
         </ProjectImage>
                   <ProjectContent>
                     <ProjectTitle>{project.title}</ProjectTitle>

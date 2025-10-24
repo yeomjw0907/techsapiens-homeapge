@@ -274,7 +274,7 @@ const ProjectSection: React.FC = () => {
                 whileHover={{ scale: 1.02 }}
               >
         <ProjectImage $thumbnailUrl={project.thumbnail_url}>
-          {!project.thumbnail_url && (project.icon || '📊')}
+          {!project.thumbnail_url && '📊'}
         </ProjectImage>
                 <ProjectContent>
                   <ProjectTitle>{project.title}</ProjectTitle>

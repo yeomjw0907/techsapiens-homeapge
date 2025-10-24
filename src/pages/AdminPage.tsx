@@ -541,7 +541,7 @@ const AdminPage: React.FC = () => {
     title: '',
     description: '',
     client: '',
-    status: 'active' as const,
+    status: 'active' as 'active' | 'completed' | 'pending',
     start_date: '',
     end_date: '',
     tech_stack: [] as string[],
@@ -651,7 +651,7 @@ const AdminPage: React.FC = () => {
           end_date: '',
           tech_stack: [],
           achievements: [],
-          icon: '',
+          thumbnail_url: '',
           category: ''
         });
         alert('프로젝트가 성공적으로 추가되었습니다.');

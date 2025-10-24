@@ -131,7 +131,7 @@ const SendButton = styled(motion.button)`
   }
 `;
 
-const SuggestionContainer = styled.div`
+const SuggestionContainer = styled(motion.div)`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));

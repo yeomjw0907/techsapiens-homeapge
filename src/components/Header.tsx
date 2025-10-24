@@ -203,20 +203,6 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
               to="/" 
               $isActive={location.pathname === '/'}
               onClick={(e) => {
-                if (location.pathname === '/') {
-                  e.preventDefault();
-                  scrollToSection('home');
-                }
-              }}
-            >
-              메인페이지
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink 
-              to="/" 
-              $isActive={false}
-              onClick={(e) => {
                 e.preventDefault();
                 scrollToSection('services');
               }}
@@ -235,21 +221,13 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
           <NavItem>
             <NavLink 
               to="/" 
-              $isActive={false}
+              $isActive={location.pathname === '/'}
               onClick={(e) => {
                 e.preventDefault();
                 scrollToSection('about');
               }}
             >
               회사소개
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink 
-              to="/admin"
-              $isActive={location.pathname === '/admin'}
-            >
-              관리자
             </NavLink>
           </NavItem>
           <NavItem>
@@ -276,20 +254,6 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
               to="/" 
               $isActive={location.pathname === '/'}
               onClick={(e) => {
-                if (location.pathname === '/') {
-                  e.preventDefault();
-                  scrollToSection('home');
-                }
-              }}
-            >
-              메인페이지
-            </MobileNavLink>
-          </MobileNavItem>
-          <MobileNavItem>
-            <MobileNavLink 
-              to="/" 
-              $isActive={false}
-              onClick={(e) => {
                 e.preventDefault();
                 scrollToSection('services');
               }}
@@ -308,21 +272,13 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
           <MobileNavItem>
             <MobileNavLink 
               to="/" 
-              $isActive={false}
+              $isActive={location.pathname === '/'}
               onClick={(e) => {
                 e.preventDefault();
                 scrollToSection('about');
               }}
             >
               회사소개
-            </MobileNavLink>
-          </MobileNavItem>
-          <MobileNavItem>
-            <MobileNavLink 
-              to="/admin"
-              $isActive={location.pathname === '/admin'}
-            >
-              관리자
             </MobileNavLink>
           </MobileNavItem>
           <MobileNavItem>

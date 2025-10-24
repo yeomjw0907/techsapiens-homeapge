@@ -9,6 +9,7 @@ const HeroContainer = styled.section`
   position: relative;
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   overflow: hidden;
+  padding-top: 80px;
 `;
 
 const BackgroundPattern = styled.div`
@@ -280,7 +281,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
             >
               <TitleLine>AI의 속도, 전문가의 완성도</TitleLine>
               <TitleLine>
-                IT 전문가 그룹 <TitleHighlight>테크레디</TitleHighlight>
+                IT 전문가 그룹 <TitleHighlight>테크사피엔스</TitleHighlight>
               </TitleLine>
             </Title>
             <Subtitle

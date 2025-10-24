@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { supabase, getProjects, getInquiries, createProject, updateProject, deleteProject, createInquiry, updateInquiry, deleteInquiry, Project, Inquiry } from '../lib/supabase';
 
 const AdminContainer = styled.div`
   min-height: 100vh;
@@ -244,61 +245,175 @@ const AddButton = styled.button`
   }
 `;
 
+const LoginForm = styled.div`
+  max-width: 400px;
+  margin: 0 auto;
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: 2rem;
+`;
+
+const LoginTitle = styled.h2`
+  color: white;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  color: white;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.colors.primary};
+  }
+
+  &::placeholder {
+    color: ${props => props.theme.colors.textSecondary};
+  }
+`;
+
+const LoginButton = styled.button`
+  width: 100%;
+  background: ${props => props.theme.colors.gradient};
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: ${props => props.theme.borderRadius.md};
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${props => props.theme.shadows.lg};
+  }
+`;
+
 const AdminPage: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState<'projects' | 'inquiries'>('projects');
+  const [loginData, setLoginData] = useState({
+    username: '',
+    password: ''
+  });
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // 샘플 데이터
-  const projects = [
-    {
-      id: 1,
-      title: '대형 유통사 통합 ERP 시스템 구축',
-      status: 'active',
-      date: '2024.01 - 2024.08',
-      description: '선사 사원리를 위한 한 ERP 시스설계 구축 시 내이너 마이그레이션 및 통합.',
-      client: 'A유통그룹'
-    },
-    {
-      id: 2,
-      title: '금융권 클라우드 인프라 구축 및 운영',
-      status: 'completed',
-      date: '2023.06 -',
-      description: 'AWS 기반 고사성어라 구축 및 24/7 어린 시비스 시공.',
-      client: 'B금융지주'
-    },
-    {
-      id: 3,
-      title: '제조사 스마트팩토리 웹 플랫폼 개발',
-      status: 'pending',
-      date: '2023.09 - 2024.03',
-      description: '실시간 생산 현황 모니터링 및 설비 관리를 위한 길 기반 플랫폼 개발.',
-      client: 'C제조사'
-    }
-  ];
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      // Supabase를 통한 인증
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('username', loginData.username)
+        .eq('password', loginData.password)
+        .single();
 
-  const inquiries = [
-    {
-      id: 1,
-      name: '김철수',
-      company: 'D기업',
-      email: 'kim@dcompany.com',
-      phone: '010-1234-5678',
-      projectType: '웹 개발',
-      budget: '5,000만원',
-      description: '회사 홈페이지 리뉴얼 프로젝트를 진행하고 싶습니다.',
-      date: '2024-01-15'
-    },
-    {
-      id: 2,
-      name: '이영희',
-      company: 'E스타트업',
-      email: 'lee@estartup.com',
-      phone: '010-9876-5432',
-      projectType: '모바일 앱',
-      budget: '3,000만원',
-      description: 'iOS/Android 앱 개발 프로젝트 문의드립니다.',
-      date: '2024-01-14'
+      if (error || !data) {
+        alert('잘못된 로그인 정보입니다.');
+        return;
+      }
+
+      setIsLoggedIn(true);
+      // 데이터 로드
+      await loadData();
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('로그인 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const loadData = async () => {
+    setLoading(true);
+    try {
+      const [projectsData, inquiriesData] = await Promise.all([
+        getProjects(),
+        getInquiries()
+      ]);
+      setProjects(projectsData);
+      setInquiries(inquiriesData);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteProject = async (id: number) => {
+    if (window.confirm('정말로 이 프로젝트를 삭제하시겠습니까?')) {
+      const success = await deleteProject(id);
+      if (success) {
+        setProjects(projects.filter(p => p.id !== id));
+      } else {
+        alert('프로젝트 삭제 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  const handleDeleteInquiry = async (id: number) => {
+    if (window.confirm('정말로 이 문의사항을 삭제하시겠습니까?')) {
+      const success = await deleteInquiry(id);
+      if (success) {
+        setInquiries(inquiries.filter(i => i.id !== id));
+      } else {
+        alert('문의사항 삭제 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <AdminContainer>
+        <Container>
+          <LoginForm>
+            <LoginTitle>관리자 로그인</LoginTitle>
+            <form onSubmit={handleLogin}>
+              <Input
+                type="text"
+                placeholder="사용자명"
+                value={loginData.username}
+                onChange={(e) => setLoginData({...loginData, username: e.target.value})}
+                required
+              />
+              <Input
+                type="password"
+                placeholder="비밀번호"
+                value={loginData.password}
+                onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                required
+              />
+              <LoginButton type="submit" disabled={loading}>
+                {loading ? '로그인 중...' : '로그인'}
+              </LoginButton>
+            </form>
+            <div style={{ marginTop: '1rem', textAlign: 'center', color: '#a1a1aa', fontSize: '0.9rem' }}>
+              테스트 계정: admin / admin123
+            </div>
+          </LoginForm>
+        </Container>
+      </AdminContainer>
+    );
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('ko-KR');
+  };
 
   return (
     <AdminContainer>
@@ -336,13 +451,13 @@ const AdminPage: React.FC = () => {
                         {project.status === 'active' ? '진행중' : 
                          project.status === 'completed' ? '완료' : '대기'}
                       </ProjectStatus>
-                      <ProjectDate>{project.date}</ProjectDate>
+                      <ProjectDate>{formatDate(project.start_date)} - {project.end_date ? formatDate(project.end_date) : '진행중'}</ProjectDate>
                     </ProjectMeta>
                     <ProjectDescription>{project.description}</ProjectDescription>
                     <ProjectActions>
                       <ActionButton $variant="primary">수정</ActionButton>
                       <ActionButton $variant="secondary">상세</ActionButton>
-                      <ActionButton $variant="danger">삭제</ActionButton>
+                      <ActionButton $variant="danger" onClick={() => handleDeleteProject(project.id)}>삭제</ActionButton>
                     </ProjectActions>
                   </ProjectCard>
                 ))}
@@ -357,7 +472,7 @@ const AdminPage: React.FC = () => {
                   <InquiryItem key={inquiry.id}>
                     <InquiryHeader>
                       <InquiryTitle>{inquiry.company} - {inquiry.name}</InquiryTitle>
-                      <InquiryDate>{inquiry.date}</InquiryDate>
+                      <InquiryDate>{formatDate(inquiry.created_at)}</InquiryDate>
                     </InquiryHeader>
                     <InquiryContent>
                       <InquiryField>
@@ -366,7 +481,7 @@ const AdminPage: React.FC = () => {
                       </InquiryField>
                       <InquiryField>
                         <FieldLabel>프로젝트 유형:</FieldLabel>
-                        <FieldValue>{inquiry.projectType}</FieldValue>
+                        <FieldValue>{inquiry.project_type}</FieldValue>
                       </InquiryField>
                       <InquiryField>
                         <FieldLabel>예산:</FieldLabel>
@@ -380,7 +495,7 @@ const AdminPage: React.FC = () => {
                     <InquiryActions>
                       <ActionButton $variant="primary">답변하기</ActionButton>
                       <ActionButton $variant="secondary">상세보기</ActionButton>
-                      <ActionButton $variant="danger">삭제</ActionButton>
+                      <ActionButton $variant="danger" onClick={() => handleDeleteInquiry(inquiry.id)}>삭제</ActionButton>
                     </InquiryActions>
                   </InquiryItem>
                 ))}

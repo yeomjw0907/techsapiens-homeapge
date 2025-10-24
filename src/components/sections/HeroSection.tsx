@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
-const HeroContainer = styled.section`
+const HeroContainer = styled.section<{ $isStep5?: boolean }>`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: ${props => props.$isStep5 ? 'stretch' : 'center'};
   justify-content: center;
   position: relative;
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   overflow: hidden;
   padding: 80px 2rem 2rem;
+  width: 100%;
+  max-width: 100vw;
 `;
 
 const BackgroundPattern = styled.div<{ $mouseX: number; $mouseY: number }>`
@@ -41,12 +43,13 @@ const BackgroundPattern = styled.div<{ $mouseX: number; $mouseY: number }>`
 
 const MainHero = styled.div`
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   z-index: 2;
+  margin: 0 auto;
 `;
 
 const ChatContainer = styled.div`
@@ -63,7 +66,9 @@ const WelcomeText = styled(motion.h1)`
   font-weight: 600;
   color: white;
   text-align: center;
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
+  width: 100%;
+  max-width: 800px;
 
   @media (max-width: ${props => props.theme.breakpoints.mobile}) {
     font-size: 2rem;
@@ -74,7 +79,9 @@ const Subtitle = styled(motion.p)`
   font-size: 1.1rem;
   color: ${props => props.theme.colors.textSecondary};
   text-align: center;
-  margin-bottom: 3rem;
+  margin: 0 auto 3rem;
+  width: 100%;
+  max-width: 600px;
   line-height: 1.6;
 `;
 
@@ -275,7 +282,7 @@ const InterviewContainer = styled(motion.div)`
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.lg};
   padding: 2rem;
-  margin-top: 2rem;
+  margin: 2rem auto 0;
 `;
 
 const InterviewQuestion = styled.h3`
@@ -309,7 +316,7 @@ const OptionButton = styled(motion.button)`
   }
 `;
 
-const TextInput = styled.input`
+const TextInput = styled.textarea`
   width: 100%;
   padding: 1rem;
   background: ${props => props.theme.colors.background};
@@ -317,8 +324,11 @@ const TextInput = styled.input`
   border-radius: ${props => props.theme.borderRadius.md};
   color: white;
   font-size: 1rem;
+  font-family: inherit;
   outline: none;
   margin-bottom: 1.5rem;
+  resize: vertical;
+  min-height: 80px;
 
   &:focus {
     border-color: ${props => props.theme.colors.primary};
@@ -329,11 +339,6 @@ const TextInput = styled.input`
   }
 `;
 
-const SimilarPortfolioContainer = styled(motion.div)`
-  width: 100%;
-  max-width: 1200px;
-  margin-top: 2rem;
-`;
 
 const ProposalCompleteMessage = styled(motion.div)`
   background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
@@ -367,8 +372,37 @@ const PortfolioLeft = styled.div`
   flex: 1;
 `;
 
-const PortfolioRight = styled.div`
+const PortfolioRight = styled(motion.div)`
   flex: 1;
+  min-height: 500px;
+  max-height: 600px;
+  overflow-y: auto;
+  
+  /* 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: ${props => props.theme.colors.background};
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: ${props => props.theme.colors.primary};
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${props => props.theme.colors.primary};
+  }
+`;
+
+const SimilarPortfolioContainer = styled(motion.div)`
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: 3rem;
 `;
 
 const SimilarPortfolioTitle = styled.h3`
@@ -376,19 +410,21 @@ const SimilarPortfolioTitle = styled.h3`
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
+  text-align: center;
 `;
 
 const PortfolioGrid = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
+  margin-top: 2rem;
 `;
 
 const PortfolioCard = styled(motion.div)`
   background: ${props => props.theme.colors.surface};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.lg};
-  padding: 1.5rem;
+  padding: 2rem;
   cursor: pointer;
   transition: all 0.3s ease;
 
@@ -411,46 +447,46 @@ const CategoryBadge = styled.span`
 
 const PortfolioTitle = styled.h4`
   color: white;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 `;
 
 const PortfolioClient = styled.p`
   color: ${props => props.theme.colors.primary};
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
 `;
 
 const PortfolioDescription = styled.p`
   color: ${props => props.theme.colors.textSecondary};
-  font-size: 0.9rem;
-  line-height: 1.4;
-  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
 `;
 
 const PortfolioTech = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 `;
 
 const TechTag = styled.span`
   background: ${props => props.theme.colors.primary};
   color: white;
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem 0.75rem;
   border-radius: ${props => props.theme.borderRadius.sm};
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 `;
 
 const ViewProjectButton = styled(motion.button)`
   background: transparent;
   border: 1px solid ${props => props.theme.colors.primary};
   color: ${props => props.theme.colors.primary};
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   border-radius: ${props => props.theme.borderRadius.md};
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
 
@@ -692,38 +728,43 @@ const RecipeButton = styled(motion.button)`
 
 const QuoteSuccessMessage = styled(motion.div)`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.95), rgba(16, 185, 129, 0.95));
-  color: white;
-  padding: 2rem 3rem;
-  border-radius: ${props => props.theme.borderRadius.lg};
-  text-align: center;
-  z-index: 2000;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  bottom: 2rem;
+  right: 2rem;
+  background: #ffffff;
+  color: #333333;
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  max-width: 400px;
+  border: 1px solid #e5e7eb;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 `;
 
 const QuoteSuccessTitle = styled.h3`
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
 `;
 
 const QuoteSuccessText = styled.p`
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.5;
+  color: #6b7280;
 `;
+
 
 const ContactFormContainer = styled(motion.div)`
   width: 100%;
   max-width: 800px;
+  margin: 0 auto;
   background: ${props => props.theme.colors.surface};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.lg};
-  padding: 2rem;
-  margin-top: 2rem;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
 `;
 
 const ContactFormTitle = styled.h3`
@@ -736,7 +777,7 @@ const ContactFormTitle = styled.h3`
 
 const ContactFormGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.5rem;
   margin-bottom: 2rem;
 `;
@@ -748,22 +789,24 @@ const ContactFormField = styled.div`
 
 const ContactFormLabel = styled.label`
   color: ${props => props.theme.colors.textSecondary};
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
   font-weight: 500;
 `;
 
 const ContactFormInput = styled.input`
-  padding: 0.75rem;
+  padding: 1rem;
   background: ${props => props.theme.colors.background};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.md};
   color: white;
-  font-size: 0.9rem;
+  font-size: 1rem;
   outline: none;
+  transition: all 0.3s ease;
 
   &:focus {
     border-color: ${props => props.theme.colors.primary};
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   }
 
   &::placeholder {
@@ -774,20 +817,22 @@ const ContactFormInput = styled.input`
 const ContactFormCheckbox = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
   grid-column: 1 / -1;
 `;
 
 const ContactFormCheckboxInput = styled.input`
-  width: 1rem;
-  height: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
 `;
 
 const ContactFormCheckboxLabel = styled.label`
   color: ${props => props.theme.colors.textSecondary};
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
+  line-height: 1.5;
 `;
 
 const ContactFormActions = styled.div`
@@ -801,10 +846,11 @@ const ContactFormButton = styled(motion.button)`
   color: white;
   border: none;
   border-radius: ${props => props.theme.borderRadius.md};
-  padding: 1rem 2rem;
-  font-size: 1rem;
+  padding: 1.25rem 2.5rem;
+  font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
@@ -814,6 +860,7 @@ const ContactFormButton = styled(motion.button)`
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
   }
 `;
 
@@ -947,6 +994,37 @@ const FinalRecipeButton = styled(motion.button)`
   }
 `;
 
+const ContactFormStep5Container = styled(motion.div)`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  gap: 3rem;
+  align-items: flex-start;
+  margin-top: 2rem;
+  min-height: 600px;
+
+  @media (max-width: 1024px) {
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+`;
+
+const ContactFormLeft = styled(motion.div)`
+  flex: 1;
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: 2.5rem;
+  min-height: 500px;
+`;
+
 // 사용하지 않는 스타일 컴포넌트들 제거됨
 
 interface HeroSectionProps {
@@ -1012,6 +1090,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
       question: "필요한 주요 기능들을 알려주세요",
       type: "text",
       placeholder: "예: 사용자 관리, 결제 시스템, 상품 관리, 관리자 페이지"
+    },
+    {
+      question: "연락처 정보를 입력해주세요",
+      type: "contact",
+      placeholder: "담당자 정보를 입력해주세요"
     }
   ];
 
@@ -1028,6 +1111,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     }
   }, [typingIndex, placeholderText]);
 
+  // 페이지 로드 시 초기 상태로 리셋
+  useEffect(() => {
+    resetToInitialState();
+  }, []);
+
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -1035,17 +1123,39 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     setMousePosition({ x, y });
   };
 
+  const formatPhoneNumber = (value: string) => {
+    // 숫자만 추출
+    const numbers = value.replace(/\D/g, '');
+    
+    // 010으로 시작하는 경우
+    if (numbers.startsWith('010')) {
+      if (numbers.length <= 3) {
+        return numbers;
+      } else if (numbers.length <= 7) {
+        return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+      } else if (numbers.length <= 11) {
+        return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7)}`;
+      } else {
+        return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+      }
+    }
+    
+    // 다른 번호 형식의 경우
+    if (numbers.length <= 3) {
+      return numbers;
+    } else if (numbers.length <= 7) {
+      return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+    } else {
+      return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+    }
+  };
+
   const handlePromptSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim()) return;
     
-    setIsGenerating(true);
-    
-    // 인터뷰 시작
-    setTimeout(() => {
-      setIsGenerating(false);
-      setInterviewData(prev => ({ ...prev, currentStep: 1 }));
-    }, 2000);
+    // 인터뷰 시작 (로딩 애니메이션 없이 바로 시작)
+    setInterviewData(prev => ({ ...prev, currentStep: 1 }));
   };
 
   const handleInterviewAnswer = (answer: string) => {
@@ -1058,9 +1168,20 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
   };
 
   const handleNextStep = () => {
+    const currentQuestion = interviewQuestions[interviewData.currentStep - 1];
+    
+    // 5/5 단계 (contact 타입)인 경우
+    if (currentQuestion.type === 'contact') {
+      // 연락처 정보가 모두 입력되었는지 확인
+      if (recipeData.name && recipeData.email && recipeData.phone && recipeData.privacyAgreement) {
+        // 최종 레시피 표시
+        setShowFinalRecipe(true);
+      }
+      return;
+    }
+    
+    // 다른 단계들
     if (selectedAnswer) {
-      const currentQuestion = interviewQuestions[interviewData.currentStep - 1];
-      
       if (currentQuestion.type === 'select') {
         if (currentQuestion.question.includes('프로젝트')) {
           setInterviewData(prev => ({ ...prev, projectType: selectedAnswer }));
@@ -1079,8 +1200,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
         setSelectedAnswer('');
         setShowCustomInput(false);
       } else {
-        // 인터뷰 완료 - 연락처 폼 표시
-        setShowContactForm(true);
+        // 인터뷰 완료 - 최종 레시피 표시
+        setShowFinalRecipe(true);
       }
     }
   };
@@ -1112,10 +1233,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     // 여기서 Supabase에 새로운 문의 저장
     console.log('Final recipe submitted:', { ...interviewData, ...recipeData });
     setShowQuoteSuccess(true);
+    setShowFinalRecipe(false);
+    
+    // 토스트 메시지 표시 후 첫 화면으로 복귀
     setTimeout(() => {
       setShowQuoteSuccess(false);
-      setShowFinalRecipe(false);
-      setShowSimilarPortfolio(true);
+      resetToInitialState();
     }, 3000);
   };
 
@@ -1131,6 +1254,34 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
 
   const handleSuggestionClick = (suggestion: string) => {
     setPrompt(suggestion);
+  };
+
+  const resetToInitialState = () => {
+    setPrompt('');
+    setInterviewData({
+      currentStep: 0,
+      projectType: '',
+      budget: '',
+      timeline: '',
+      features: []
+    });
+    setRecipeData({
+      name: '',
+      company: '',
+      email: '',
+      phone: '',
+      privacyAgreement: false
+    });
+    setShowSimilarPortfolio(false);
+    setShowRecipePopup(false);
+    setShowFinalRecipe(false);
+    setShowContactForm(false);
+    setShowQuoteSuccess(false);
+    setCustomProjectType('');
+    setFeaturesInput('');
+    setSelectedAnswer('');
+    setShowCustomInput(false);
+    setPromptFocused(false);
   };
 
   const TypingText = styled.span`
@@ -1209,7 +1360,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
   ];
 
   return (
-    <HeroContainer id="home" onMouseMove={handleMouseMove}>
+    <HeroContainer id="home" onMouseMove={handleMouseMove} $isStep5={interviewData.currentStep === 5}>
       <BackgroundPattern $mouseX={mousePosition.x} $mouseY={mousePosition.y} />
       <MainHero>
         <ChatContainer>
@@ -1248,17 +1399,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                   />
                   <SendButton
                     type="submit"
-                    disabled={!prompt.trim() || isGenerating}
+                    disabled={!prompt.trim()}
                   >
-                    {isGenerating ? (
-                      <LoadingSpinner>
-                        <LoadingDot />
-                        <LoadingDot />
-                        <LoadingDot />
-                      </LoadingSpinner>
-                    ) : '→'}
+                    →
                   </SendButton>
-                  {isGenerating && <BacklightOverlay animate={{ opacity: 1 }} />}
                   {!prompt && !promptFocused && (
                     <TypingPlaceholder>
                       {typingText}
@@ -1365,15 +1509,213 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                       </NextButton>
                     </NavigationButtons>
                   </>
+                ) : currentQuestion.type === 'contact' ? (
+                  <>
+                    <InterviewContainer
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8 }}
+                    >
+                      <InterviewQuestion>연락처 정보를 입력해주세요</InterviewQuestion>
+                      
+                      <OptionGrid>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%' }}>
+                          <div>
+                            <label style={{ color: 'white', fontSize: '1rem', marginBottom: '0.5rem', display: 'block' }}>
+                              회사명 *
+                            </label>
+                            <input
+                              type="text"
+                              value={recipeData.company}
+                              onChange={(e) => setRecipeData(prev => ({ ...prev, company: e.target.value }))}
+                              placeholder="(주)테크사피엔스"
+                              style={{
+                                width: '100%',
+                                padding: '1rem',
+                                background: '#1a1a2e',
+                                border: '1px solid #2d2d44',
+                                borderRadius: '8px',
+                                color: 'white',
+                                fontSize: '1rem',
+                                outline: 'none'
+                              }}
+                            />
+                          </div>
+                          
+                          <div>
+                            <label style={{ color: 'white', fontSize: '1rem', marginBottom: '0.5rem', display: 'block' }}>
+                              담당자 성함 *
+                            </label>
+                            <input
+                              type="text"
+                              value={recipeData.name}
+                              onChange={(e) => setRecipeData(prev => ({ ...prev, name: e.target.value }))}
+                              placeholder="홍길동"
+                              style={{
+                                width: '100%',
+                                padding: '1rem',
+                                background: '#1a1a2e',
+                                border: '1px solid #2d2d44',
+                                borderRadius: '8px',
+                                color: 'white',
+                                fontSize: '1rem',
+                                outline: 'none'
+                              }}
+                            />
+                          </div>
+                          
+                          <div>
+                            <label style={{ color: 'white', fontSize: '1rem', marginBottom: '0.5rem', display: 'block' }}>
+                              이메일 *
+                            </label>
+                            <input
+                              type="email"
+                              value={recipeData.email}
+                              onChange={(e) => setRecipeData(prev => ({ ...prev, email: e.target.value }))}
+                              placeholder="hong@company.com"
+                              style={{
+                                width: '100%',
+                                padding: '1rem',
+                                background: '#1a1a2e',
+                                border: '1px solid #2d2d44',
+                                borderRadius: '8px',
+                                color: 'white',
+                                fontSize: '1rem',
+                                outline: 'none'
+                              }}
+                            />
+                          </div>
+                          
+                          <div>
+                            <label style={{ color: 'white', fontSize: '1rem', marginBottom: '0.5rem', display: 'block' }}>
+                              연락처 *
+                            </label>
+                            <input
+                              type="tel"
+                              value={recipeData.phone}
+                              onChange={(e) => {
+                                const formatted = formatPhoneNumber(e.target.value);
+                                setRecipeData(prev => ({ ...prev, phone: formatted }));
+                              }}
+                              placeholder="010-1234-5678"
+                              style={{
+                                width: '100%',
+                                padding: '1rem',
+                                background: '#1a1a2e',
+                                border: '1px solid #2d2d44',
+                                borderRadius: '8px',
+                                color: 'white',
+                                fontSize: '1rem',
+                                outline: 'none'
+                              }}
+                            />
+                          </div>
+                          
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem' }}>
+                            <input
+                              type="checkbox"
+                              checked={recipeData.privacyAgreement}
+                              onChange={(e) => setRecipeData(prev => ({ ...prev, privacyAgreement: e.target.checked }))}
+                              style={{ width: '1.25rem', height: '1.25rem' }}
+                            />
+                            <label style={{ color: '#9ca3af', fontSize: '1rem', cursor: 'pointer' }}>
+                              <a href="/policy" target="_blank" style={{ color: '#6366f1', textDecoration: 'underline' }}>
+                                개인정보 처리방침
+                              </a>에 동의합니다 *
+                            </label>
+                          </div>
+                        </div>
+                      </OptionGrid>
+                      
+                      <NavigationButtons>
+                        <NavButton
+                          onClick={handlePreviousStep}
+                          disabled={interviewData.currentStep === 1}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          이전
+                        </NavButton>
+                        <NextButton
+                          onClick={handleNextStep}
+                          disabled={!recipeData.company || !recipeData.name || !recipeData.email || !recipeData.phone || !recipeData.privacyAgreement}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          견적서 받기
+                        </NextButton>
+                      </NavigationButtons>
+                    </InterviewContainer>
+                    
+                    <SimilarPortfolioContainer
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: 0.3 }}
+                    >
+                      <SimilarPortfolioTitle>유사 포트폴리오 사례</SimilarPortfolioTitle>
+                      <PortfolioGrid>
+                        <PortfolioCard
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <PortfolioTitle>스마트 팩토리 IoT 플랫폼</PortfolioTitle>
+                          <PortfolioClient>제조업체 A</PortfolioClient>
+                          <PortfolioDescription>
+                            공장 내 모든 장비를 연결하여 실시간 모니터링과 예측 정비가 가능한 IoT 플랫폼 구축
+                          </PortfolioDescription>
+                          <PortfolioTech>
+                            <TechTag>React</TechTag>
+                            <TechTag>Node.js</TechTag>
+                            <TechTag>IoT</TechTag>
+                            <TechTag>MySQL</TechTag>
+                          </PortfolioTech>
+                          <ViewProjectButton>프로젝트 보기</ViewProjectButton>
+                        </PortfolioCard>
+                        
+                        <PortfolioCard
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <PortfolioTitle>클라우드 마이그레이션</PortfolioTitle>
+                          <PortfolioClient>금융기관 B</PortfolioClient>
+                          <PortfolioDescription>
+                            기존 온프레미스 시스템을 AWS 클라우드로 마이그레이션하여 비용 절감 및 확장성 확보
+                          </PortfolioDescription>
+                          <PortfolioTech>
+                            <TechTag>AWS</TechTag>
+                            <TechTag>Docker</TechTag>
+                            <TechTag>Kubernetes</TechTag>
+                            <TechTag>PostgreSQL</TechTag>
+                          </PortfolioTech>
+                          <ViewProjectButton>프로젝트 보기</ViewProjectButton>
+                        </PortfolioCard>
+                        
+                        <PortfolioCard
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <PortfolioTitle>AI 기반 고객 서비스</PortfolioTitle>
+                          <PortfolioClient>이커머스 C</PortfolioClient>
+                          <PortfolioDescription>
+                            챗봇과 음성 인식을 활용한 24시간 고객 상담 시스템 구축
+                          </PortfolioDescription>
+                          <PortfolioTech>
+                            <TechTag>Python</TechTag>
+                            <TechTag>TensorFlow</TechTag>
+                            <TechTag>FastAPI</TechTag>
+                            <TechTag>MongoDB</TechTag>
+                          </PortfolioTech>
+                          <ViewProjectButton>프로젝트 보기</ViewProjectButton>
+                        </PortfolioCard>
+                      </PortfolioGrid>
+                    </SimilarPortfolioContainer>
+                  </>
                 ) : (
                   <>
                     <TextInput
-                      as="textarea"
                       placeholder={currentQuestion.placeholder}
                       value={featuresInput}
                       onChange={(e) => handleFeaturesInput(e.target.value)}
-                      rows={3}
-                      style={{ resize: 'vertical', minHeight: '80px' }}
                     />
                     <NavigationButtons>
                       <NavButton
@@ -1412,9 +1754,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                 exit={{ scale: 0.9, opacity: 0 }}
               >
                 <RecipeHeader>
-                  <RecipeTitle>🍳 맞춤 제안서 레시피</RecipeTitle>
+                  <RecipeTitle>📋 최종 제안서</RecipeTitle>
                   <RecipeDescription>
-                    귀하의 요구사항에 맞는 완벽한 제안서를 만들어드리겠습니다.
+                    귀하의 요구사항에 맞는 제안서가 준비되었습니다.
                   </RecipeDescription>
                   <button
                     onClick={handleCloseRecipePopup}
@@ -1438,16 +1780,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                   <RecipeSection>
                     <RecipeSectionTitle>📋 프로젝트 정보</RecipeSectionTitle>
                     <RecipeField>
+                      <RecipeLabel>회사명</RecipeLabel>
+                      <RecipeInput value={recipeData.company} readOnly />
+                    </RecipeField>
+                    <RecipeField>
                       <RecipeLabel>프로젝트 유형</RecipeLabel>
                       <RecipeInput value={interviewData.projectType} readOnly />
                     </RecipeField>
                     <RecipeField>
                       <RecipeLabel>예상 예산</RecipeLabel>
                       <RecipeInput value={interviewData.budget} readOnly />
-                    </RecipeField>
-                    <RecipeField>
-                      <RecipeLabel>완료 예상 기간</RecipeLabel>
-                      <RecipeInput value={interviewData.timeline} readOnly />
                     </RecipeField>
                     <RecipeField>
                       <RecipeLabel>주요 기능</RecipeLabel>
@@ -1505,7 +1847,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
 
                 <RecipeActions>
                   <RecipeButton
-                    onClick={handleRecipeSubmit}
+                    onClick={handleFinalRecipeSubmit}
                     disabled={!recipeData.name || !recipeData.company || !recipeData.email || !recipeData.phone || !recipeData.privacyAgreement}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -1596,14 +1938,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              onClick={() => setShowFinalRecipe(false)}
             >
               <FinalRecipeContainer
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
               >
                 <FinalRecipeHeader>
-                  <FinalRecipeTitle>🍳 최종 제안서 레시피</FinalRecipeTitle>
+                  <FinalRecipeTitle>제안서 최종 확인</FinalRecipeTitle>
                   <FinalRecipeDescription>
                     귀하의 요구사항에 맞는 완벽한 제안서가 준비되었습니다.
                   </FinalRecipeDescription>
@@ -1614,7 +1958,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
 
                 <FinalRecipeContent>
                   <FinalRecipeSection>
-                    <FinalRecipeSectionTitle>📋 프로젝트 정보</FinalRecipeSectionTitle>
+                    <FinalRecipeSectionTitle>프로젝트 정보</FinalRecipeSectionTitle>
                     <FinalRecipeField>
                       <FinalRecipeLabel>프로젝트 유형</FinalRecipeLabel>
                       <FinalRecipeValue>{interviewData.projectType}</FinalRecipeValue>
@@ -1624,17 +1968,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                       <FinalRecipeValue>{interviewData.budget}</FinalRecipeValue>
                     </FinalRecipeField>
                     <FinalRecipeField>
-                      <FinalRecipeLabel>완료 예상 기간</FinalRecipeLabel>
-                      <FinalRecipeValue>{interviewData.timeline}</FinalRecipeValue>
-                    </FinalRecipeField>
-                    <FinalRecipeField>
                       <FinalRecipeLabel>주요 기능</FinalRecipeLabel>
                       <FinalRecipeValue>{interviewData.features.join(', ')}</FinalRecipeValue>
                     </FinalRecipeField>
                   </FinalRecipeSection>
 
                   <FinalRecipeSection>
-                    <FinalRecipeSectionTitle>📞 연락처 정보</FinalRecipeSectionTitle>
+                    <FinalRecipeSectionTitle>연락처 정보</FinalRecipeSectionTitle>
                     <FinalRecipeField>
                       <FinalRecipeLabel>담당자 성함</FinalRecipeLabel>
                       <FinalRecipeValue>{recipeData.name}</FinalRecipeValue>
@@ -1652,6 +1992,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                       <FinalRecipeValue>{recipeData.phone}</FinalRecipeValue>
                     </FinalRecipeField>
                   </FinalRecipeSection>
+
                 </FinalRecipeContent>
 
                 <FinalRecipeActions>
@@ -1660,7 +2001,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    최종 견적서 제출
+                    제안서 제출
                   </FinalRecipeButton>
                 </FinalRecipeActions>
               </FinalRecipeContainer>
@@ -1669,11 +2010,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
 
           {showQuoteSuccess && (
             <QuoteSuccessMessage
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
+              initial={{ y: 100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 100, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <QuoteSuccessTitle>✅ 견적서 요청 완료</QuoteSuccessTitle>
+              <QuoteSuccessTitle>견적서 요청 완료</QuoteSuccessTitle>
               <QuoteSuccessText>
                 영업일 기준 3일 이내에 견적서를 송부해드리겠습니다.<br />
                 감사합니다.

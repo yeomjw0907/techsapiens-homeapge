@@ -26,11 +26,13 @@ CREATE TABLE inquiries (
   company VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
   phone VARCHAR(50) NOT NULL,
-  message TEXT NOT NULL,
-  project_type VARCHAR(100),
-  budget VARCHAR(100),
-  timeline VARCHAR(100),
-  privacy_agreement BOOLEAN DEFAULT false,
+  message TEXT, -- 기존 문의사항 (선택사항)
+  project_type VARCHAR(100), -- 프로젝트 유형
+  budget VARCHAR(100), -- 예산
+  timeline VARCHAR(100), -- 완료 기간
+  features TEXT[], -- 주요 기능들 (배열)
+  privacy_agreement BOOLEAN DEFAULT false, -- 개인정보 처리방침 동의
+  admin_memo TEXT, -- 관리자 메모
   status VARCHAR(20) NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'in_progress', 'completed', 'rejected')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -48,6 +50,14 @@ CREATE TABLE admin_users (
 -- 기본 관리자 계정 생성 (비밀번호: admin123)
 INSERT INTO admin_users (username, email, password) 
 VALUES ('admin', 'admin@techsapiens.com', 'admin123');
+
+-- 기존 inquiries 테이블에 새로운 컬럼 추가 (이미 테이블이 존재하는 경우)
+ALTER TABLE inquiries 
+ADD COLUMN IF NOT EXISTS features TEXT[],
+ADD COLUMN IF NOT EXISTS admin_memo TEXT;
+
+-- message 컬럼을 선택사항으로 변경
+ALTER TABLE inquiries ALTER COLUMN message DROP NOT NULL;
 
 -- 샘플 프로젝트 데이터
 INSERT INTO projects (title, description, client, status, start_date, end_date, tech_stack, achievements, thumbnail_url, category) VALUES

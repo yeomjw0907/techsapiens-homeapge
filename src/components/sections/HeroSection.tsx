@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { createInterviewInquiry } from '../../lib/supabase';
 
 const HeroContainer = styled.section<{ $isStep5?: boolean }>`
   min-height: 100vh;
@@ -1229,17 +1230,30 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     }
   };
 
-  const handleFinalRecipeSubmit = () => {
-    // 여기서 Supabase에 새로운 문의 저장
-    console.log('Final recipe submitted:', { ...interviewData, ...recipeData });
-    setShowQuoteSuccess(true);
-    setShowFinalRecipe(false);
-    
-    // 토스트 메시지 표시 후 첫 화면으로 복귀
-    setTimeout(() => {
-      setShowQuoteSuccess(false);
-      resetToInitialState();
-    }, 3000);
+  const handleFinalRecipeSubmit = async () => {
+    try {
+      // Supabase에 인터뷰 데이터 저장
+      const result = await createInterviewInquiry(interviewData, recipeData);
+      
+      if (result) {
+        console.log('Interview inquiry saved successfully:', result);
+        setShowQuoteSuccess(true);
+        setShowFinalRecipe(false);
+        
+        // 토스트 메시지 표시 후 첫 화면으로 복귀
+        setTimeout(() => {
+          setShowQuoteSuccess(false);
+          resetToInitialState();
+        }, 3000);
+      } else {
+        console.error('Failed to save interview inquiry');
+        // 에러 처리 - 사용자에게 알림
+        alert('문의사항 저장에 실패했습니다. 다시 시도해주세요.');
+      }
+    } catch (error) {
+      console.error('Error saving interview inquiry:', error);
+      alert('문의사항 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
   };
 
   const handleCloseRecipePopup = () => {

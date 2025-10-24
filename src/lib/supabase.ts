@@ -30,12 +30,13 @@ export interface Inquiry {
   company: string;
   email: string;
   phone: string;
-  message: string;
-  project_type?: string;
-  budget?: string;
-  timeline?: string;
-  privacy_agreement?: boolean;
-  admin_memo?: string;
+  message?: string; // 기존 문의사항 (선택사항)
+  project_type?: string; // 프로젝트 유형
+  budget?: string; // 예산
+  timeline?: string; // 완료 기간
+  features?: string[]; // 주요 기능들
+  privacy_agreement?: boolean; // 개인정보 처리방침 동의
+  admin_memo?: string; // 관리자 메모
   status: 'new' | 'contacted' | 'in_progress' | 'completed' | 'rejected';
   created_at: string;
   updated_at: string;
@@ -136,6 +137,36 @@ export const createInquiry = async (inquiry: Omit<Inquiry, 'id' | 'created_at' |
   }
 
   return data;
+};
+
+// 인터뷰 데이터를 저장하는 함수
+export const createInterviewInquiry = async (interviewData: {
+  projectType: string;
+  budget: string;
+  timeline: string;
+  features: string[];
+}, contactData: {
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  privacyAgreement: boolean;
+}): Promise<Inquiry | null> => {
+  const inquiryData = {
+    name: contactData.name,
+    company: contactData.company,
+    email: contactData.email,
+    phone: contactData.phone,
+    project_type: interviewData.projectType,
+    budget: interviewData.budget,
+    timeline: interviewData.timeline,
+    features: interviewData.features,
+    privacy_agreement: contactData.privacyAgreement,
+    status: 'new' as const,
+    message: `프로젝트 유형: ${interviewData.projectType}\n예산: ${interviewData.budget}\n완료 기간: ${interviewData.timeline}\n주요 기능: ${interviewData.features.join(', ')}`
+  };
+
+  return await createInquiry(inquiryData);
 };
 
 export const updateInquiry = async (id: number, updates: Partial<Inquiry>): Promise<Inquiry | null> => {

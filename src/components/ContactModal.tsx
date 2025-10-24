@@ -205,7 +205,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
         email: formData.email,
         phone: formData.phone,
         message: formData.message,
-        status: 'pending'
+        status: 'new' as const
       };
       
       await createInquiry(inquiryData);

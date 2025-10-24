@@ -18,6 +18,8 @@ export interface Project {
   tech_stack: string[];
   achievements: string[];
   image_url?: string;
+  icon?: string;
+  category?: string;
   created_at: string;
   updated_at: string;
 }
@@ -28,9 +30,7 @@ export interface Inquiry {
   company: string;
   email: string;
   phone: string;
-  project_type: string;
-  budget: string;
-  description: string;
+  message: string;
   status: 'new' | 'contacted' | 'in_progress' | 'completed';
   created_at: string;
   updated_at: string;

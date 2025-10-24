@@ -329,7 +329,7 @@ const ProjectPage: React.FC = () => {
 
   const filteredProjects = activeFilter === '전체' 
     ? projects 
-    : projects.filter(project => project.category === activeFilter);
+    : projects.filter(project => (project.category || '기타') === activeFilter);
 
   return (
     <ProjectPageContainer>

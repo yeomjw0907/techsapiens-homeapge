@@ -142,6 +142,19 @@ const ProjectImage = styled.div<{ $thumbnailUrl?: string }>`
   }
 `;
 
+const CategoryBadge = styled.div`
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: ${props => props.theme.colors.primary};
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: ${props => props.theme.borderRadius.sm};
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 3;
+`;
+
 const ProjectContent = styled.div`
   padding: 2rem;
 `;
@@ -388,7 +401,13 @@ const ProjectPage: React.FC = () => {
 
   const filteredProjects = activeFilter === '전체' 
     ? projects 
-    : projects.filter(project => (project.category || '기타') === activeFilter);
+    : projects.filter(project => {
+        const projectCategory = project.category || '기타';
+        return projectCategory === activeFilter || 
+               (activeFilter === '신규' && projectCategory === '구축') ||
+               (activeFilter === '유지보수' && projectCategory === '서버 관리') ||
+               (activeFilter === '컨설팅' && projectCategory === '개발');
+      });
 
   return (
     <ProjectPageContainer>
@@ -446,6 +465,7 @@ const ProjectPage: React.FC = () => {
                 <Link to={`/projects/${project.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
         <ProjectImage $thumbnailUrl={project.thumbnail_url}>
           {!project.thumbnail_url && '📊'}
+          <CategoryBadge>{project.category || '기타'}</CategoryBadge>
         </ProjectImage>
                   <ProjectContent>
                     <ProjectTitle>{project.title}</ProjectTitle>

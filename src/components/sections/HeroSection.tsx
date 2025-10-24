@@ -10,7 +10,6 @@ const HeroContainer = styled.section`
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   overflow: hidden;
   padding-top: 80px;
-  cursor: none;
 `;
 
 const BackgroundPattern = styled.div<{ $mouseX: number; $mouseY: number }>`
@@ -19,10 +18,10 @@ const BackgroundPattern = styled.div<{ $mouseX: number; $mouseY: number }>`
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at ${props => props.$mouseX}% ${props => props.$mouseY}%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-              radial-gradient(circle at ${props => 100 - props.$mouseX}% ${props => 100 - props.$mouseY}%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+  background: radial-gradient(circle at ${props => props.$mouseX}% ${props => props.$mouseY}%, rgba(99, 102, 241, 0.05) 0%, transparent 70%),
+              radial-gradient(circle at ${props => 100 - props.$mouseX}% ${props => 100 - props.$mouseY}%, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
   z-index: 1;
-  transition: all 0.3s ease;
+  transition: all 0.8s ease;
   
   &::before {
     content: '';
@@ -32,9 +31,9 @@ const BackgroundPattern = styled.div<{ $mouseX: number; $mouseY: number }>`
     right: 0;
     bottom: 0;
     background: 
-      radial-gradient(circle at ${props => props.$mouseX * 0.8}% ${props => props.$mouseY * 0.8}%, rgba(99, 102, 241, 0.08) 0%, transparent 30%),
-      radial-gradient(circle at ${props => 100 - props.$mouseX * 0.8}% ${props => 100 - props.$mouseY * 0.8}%, rgba(139, 92, 246, 0.08) 0%, transparent 30%);
-    transition: all 0.3s ease;
+      radial-gradient(circle at ${props => props.$mouseX * 0.6}% ${props => props.$mouseY * 0.6}%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at ${props => 100 - props.$mouseX * 0.6}% ${props => 100 - props.$mouseY * 0.6}%, rgba(139, 92, 246, 0.03) 0%, transparent 50%);
+    transition: all 0.8s ease;
   }
 `;
 
@@ -288,11 +287,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
   };
 
   const TypingText = styled.span`
-    border-right: 2px solid ${props => props.theme.colors.primary};
+    border-right: 2px solid #06b6d4;
     animation: blink 1s infinite;
     
     @keyframes blink {
-      0%, 50% { border-color: ${props => props.theme.colors.primary}; }
+      0%, 50% { border-color: #06b6d4; }
       51%, 100% { border-color: transparent; }
     }
   `;
@@ -370,11 +369,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
             </ButtonGroup>
           </TextContent>
           <VisualContent>
-            <ServiceIcon
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.5 }}
-            />
+            {/* 아이콘 제거 */}
           </VisualContent>
         </Content>
       </MainHero>

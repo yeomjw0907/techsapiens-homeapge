@@ -265,6 +265,19 @@ const LoadingText = styled.p`
   margin: 0;
 `;
 
+const CategoryBadge = styled.div`
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: ${props => props.theme.colors.primary};
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: ${props => props.theme.borderRadius.sm};
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 3;
+`;
+
 const ProjectSection: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -327,6 +340,7 @@ const ProjectSection: React.FC = () => {
               >
         <ProjectImage $thumbnailUrl={project.thumbnail_url}>
           {!project.thumbnail_url && '📊'}
+          <CategoryBadge>{project.category || '기타'}</CategoryBadge>
         </ProjectImage>
                 <ProjectContent>
                   <ProjectTitle>{project.title}</ProjectTitle>

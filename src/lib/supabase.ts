@@ -35,6 +35,7 @@ export interface Inquiry {
   budget?: string;
   timeline?: string;
   privacy_agreement?: boolean;
+  admin_memo?: string;
   status: 'new' | 'contacted' | 'in_progress' | 'completed' | 'rejected';
   created_at: string;
   updated_at: string;

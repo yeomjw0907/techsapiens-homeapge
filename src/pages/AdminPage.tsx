@@ -823,8 +823,8 @@ const AdminPage: React.FC = () => {
     }));
   };
 
-  const handleAchievementsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const achievements = e.target.value.split(',').map(achievement => achievement.trim()).filter(achievement => achievement);
+  const handleAchievementsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const achievements = e.target.value.split('\n').map(achievement => achievement.trim()).filter(achievement => achievement);
     setNewProject(prev => ({
       ...prev,
       achievements: achievements
@@ -832,10 +832,22 @@ const AdminPage: React.FC = () => {
   };
 
   const handleCategorySelect = (category: string) => {
-    setNewProject(prev => ({
-      ...prev,
-      category: category
-    }));
+    setNewProject(prev => {
+      const currentCategories = prev.category ? prev.category.split(', ') : [];
+      const isSelected = currentCategories.includes(category);
+      
+      let newCategories;
+      if (isSelected) {
+        newCategories = currentCategories.filter(cat => cat !== category);
+      } else {
+        newCategories = [...currentCategories, category];
+      }
+      
+      return {
+        ...prev,
+        category: newCategories.join(', ')
+      };
+    });
   };
 
   const handleInquiryDetail = (inquiry: Inquiry) => {
@@ -977,7 +989,7 @@ const AdminPage: React.FC = () => {
                     <ProjectMeta>
                       <ProjectStatus $status={project.status}>
                         {project.status === 'active' ? '진행중' : 
-                         project.status === 'completed' ? '완료' : '대기'}
+                         project.status === 'completed' ? '완료' : '진행 예정'}
                       </ProjectStatus>
                       <ProjectDate>{formatDate(project.start_date)} - {project.end_date ? formatDate(project.end_date) : '진행중'}</ProjectDate>
                     </ProjectMeta>
@@ -1138,7 +1150,7 @@ const AdminPage: React.FC = () => {
                   >
                     <option value="active">진행중</option>
                     <option value="completed">완료</option>
-                    <option value="pending">대기</option>
+                    <option value="pending">진행 예정</option>
                   </Select>
                 </FormGroup>
                 <FormGroup>
@@ -1148,7 +1160,7 @@ const AdminPage: React.FC = () => {
                       <CategoryButton
                         key={category}
                         type="button"
-                        $selected={newProject.category === category}
+                        $selected={newProject.category?.includes(category) || false}
                         onClick={() => handleCategorySelect(category)}
                       >
                         {category}
@@ -1181,12 +1193,12 @@ const AdminPage: React.FC = () => {
               </FormRow>
 
               <FormGroup>
-                <Label>주요 성과 (쉼표로 구분)</Label>
-                <ModalInput
-                  type="text"
-                  value={newProject.achievements.join(', ')}
+                <Label>주요 성과 (엔터로 구분)</Label>
+                <TextArea
+                  value={newProject.achievements.join('\n')}
                   onChange={handleAchievementsChange}
-                  placeholder="예: 성능 50% 향상, 사용자 만족도 95% 달성"
+                  placeholder="예: 성능 50% 향상&#10;사용자 만족도 95% 달성&#10;운영 비용 30% 절감"
+                  rows={4}
                 />
               </FormGroup>
 
@@ -1276,7 +1288,7 @@ const AdminPage: React.FC = () => {
                   >
                     <option value="active">진행중</option>
                     <option value="completed">완료</option>
-                    <option value="pending">대기</option>
+                    <option value="pending">진행 예정</option>
                   </Select>
                 </FormGroup>
                 <FormGroup>
@@ -1286,7 +1298,7 @@ const AdminPage: React.FC = () => {
                       <CategoryButton
                         key={category}
                         type="button"
-                        $selected={newProject.category === category}
+                        $selected={newProject.category?.includes(category) || false}
                         onClick={() => handleCategorySelect(category)}
                       >
                         {category}
@@ -1319,12 +1331,12 @@ const AdminPage: React.FC = () => {
               </FormRow>
 
               <FormGroup>
-                <Label>주요 성과 (쉼표로 구분)</Label>
-                <ModalInput
-                  type="text"
-                  value={newProject.achievements.join(', ')}
+                <Label>주요 성과 (엔터로 구분)</Label>
+                <TextArea
+                  value={newProject.achievements.join('\n')}
                   onChange={handleAchievementsChange}
-                  placeholder="예: 성능 50% 향상, 사용자 만족도 95% 달성"
+                  placeholder="예: 성능 50% 향상&#10;사용자 만족도 95% 달성&#10;운영 비용 30% 절감"
+                  rows={4}
                 />
               </FormGroup>
 
@@ -1413,9 +1425,46 @@ const AdminPage: React.FC = () => {
               <InquiryDetailMessage>{selectedInquiry.message}</InquiryDetailMessage>
             </InquiryDetailField>
             
+            <InquiryDetailField style={{ marginTop: '2rem' }}>
+              <InquiryDetailLabel>관리자 메모</InquiryDetailLabel>
+              <TextArea
+                value={selectedInquiry.admin_memo || ''}
+                onChange={(e) => {
+                  const updatedInquiry = { ...selectedInquiry, admin_memo: e.target.value };
+                  setSelectedInquiry(updatedInquiry);
+                }}
+                placeholder="관리자 메모를 입력하세요..."
+                rows={3}
+                style={{ 
+                  width: '100%', 
+                  background: 'transparent', 
+                  border: '1px solid #374151', 
+                  borderRadius: '8px', 
+                  padding: '0.75rem', 
+                  color: 'white',
+                  resize: 'vertical'
+                }}
+              />
+            </InquiryDetailField>
+            
             <InquiryDetailActions>
               <InquiryDetailButton 
                 $variant="primary"
+                onClick={async () => {
+                  try {
+                    await updateInquiry(selectedInquiry.id, { admin_memo: selectedInquiry.admin_memo });
+                    alert('관리자 메모가 저장되었습니다.');
+                  } catch (error) {
+                    console.error('Error saving admin memo:', error);
+                    alert('메모 저장 중 오류가 발생했습니다.');
+                  }
+                }}
+              >
+                메모 저장
+              </InquiryDetailButton>
+              
+              <InquiryDetailButton 
+                $variant="secondary"
                 onClick={() => {
                   // 이메일 클라이언트 열기
                   window.open(`mailto:${selectedInquiry.email}?subject=프로젝트 문의 답변&body=안녕하세요 ${selectedInquiry.name}님,`);

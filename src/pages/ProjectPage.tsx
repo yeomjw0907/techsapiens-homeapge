@@ -226,6 +226,51 @@ const AchievementItem = styled.li`
   }
 `;
 
+const LoadingContainer = styled.div`
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+`;
+
+const LoadingSpinner = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
+const LoadingDot = styled.div`
+  width: 12px;
+  height: 12px;
+  background: ${props => props.theme.colors.primary};
+  border-radius: 50%;
+  animation: loading 1.4s infinite ease-in-out both;
+
+  &:nth-child(1) { animation-delay: -0.32s; }
+  &:nth-child(2) { animation-delay: -0.16s; }
+  &:nth-child(3) { animation-delay: 0s; }
+
+  @keyframes loading {
+    0%, 80%, 100% {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+`;
+
 const ProjectPage: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState('전체');
   const [projects, setProjects] = useState<Project[]>([]);
@@ -381,7 +426,14 @@ const ProjectPage: React.FC = () => {
 
         <ProjectGrid>
           {loading ? (
-            <div>로딩 중...</div>
+            <LoadingContainer>
+              <LoadingSpinner>
+                <LoadingDot />
+                <LoadingDot />
+                <LoadingDot />
+              </LoadingSpinner>
+              <LoadingText>프로젝트를 불러오는 중...</LoadingText>
+            </LoadingContainer>
           ) : (
             filteredProjects.map((project, index) => (
               <ProjectCard

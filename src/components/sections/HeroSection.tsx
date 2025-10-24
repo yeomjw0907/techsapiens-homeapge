@@ -10,25 +10,19 @@ const HeroContainer = styled.section`
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   overflow: hidden;
   padding-top: 80px;
+  cursor: none;
 `;
 
-const BackgroundPattern = styled.div`
+const BackgroundPattern = styled.div<{ $mouseX: number; $mouseY: number }>`
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+  background: radial-gradient(circle at ${props => props.$mouseX}% ${props => props.$mouseY}%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+              radial-gradient(circle at ${props => 100 - props.$mouseX}% ${props => 100 - props.$mouseY}%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
   z-index: 1;
-  animation: float 20s ease-in-out infinite;
-  
-  @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    25% { transform: translateY(-20px) rotate(1deg); }
-    50% { transform: translateY(-10px) rotate(-1deg); }
-    75% { transform: translateY(-15px) rotate(0.5deg); }
-  }
+  transition: all 0.3s ease;
   
   &::before {
     content: '';
@@ -38,9 +32,9 @@ const BackgroundPattern = styled.div`
     right: 0;
     bottom: 0;
     background: 
-      radial-gradient(circle at 30% 70%, rgba(99, 102, 241, 0.05) 0%, transparent 30%),
-      radial-gradient(circle at 70% 30%, rgba(139, 92, 246, 0.05) 0%, transparent 30%);
-    animation: float 15s ease-in-out infinite reverse;
+      radial-gradient(circle at ${props => props.$mouseX * 0.8}% ${props => props.$mouseY * 0.8}%, rgba(99, 102, 241, 0.08) 0%, transparent 30%),
+      radial-gradient(circle at ${props => 100 - props.$mouseX * 0.8}% ${props => 100 - props.$mouseY * 0.8}%, rgba(139, 92, 246, 0.08) 0%, transparent 30%);
+    transition: all 0.3s ease;
   }
 `;
 
@@ -166,27 +160,22 @@ const VisualContent = styled.div`
   position: relative;
 `;
 
-const ThreeDIcon = styled(motion.div)`
+const ServiceIcon = styled(motion.div)`
   width: 200px;
   height: 200px;
   position: relative;
-  transform-style: preserve-3d;
-`;
-
-const IconLayer = styled.div<{ $depth: number; $color: string }>`
-  position: absolute;
-  width: ${props => 200 - props.$depth * 20}px;
-  height: ${props => 200 - props.$depth * 20}px;
-  background: ${props => props.$color};
-  border-radius: 20px;
-  transform: translateZ(${props => props.$depth * 30}px) rotateX(${props => props.$depth * 5}deg) rotateY(${props => props.$depth * 10}deg);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  color: white;
-  font-weight: bold;
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(6, 182, 212, 0.3);
+  
+  &::before {
+    content: '⚙️';
+    font-size: 4rem;
+    filter: grayscale(0) brightness(1.2);
+  }
 `;
 
 const CardsSection = styled.div`
@@ -278,6 +267,15 @@ interface HeroSectionProps {
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
+  const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setMousePosition({ x, y });
+  };
+
   const scrollToServices = () => {
     const element = document.getElementById('services');
     if (element) {
@@ -322,8 +320,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
   };
 
   return (
-    <HeroContainer id="home">
-      <BackgroundPattern />
+    <HeroContainer id="home" onMouseMove={handleMouseMove}>
+      <BackgroundPattern $mouseX={mousePosition.x} $mouseY={mousePosition.y} />
       <MainHero>
         <Content>
           <TextContent>
@@ -332,9 +330,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <TitleLine>AI의 속도, 전문가의 완성도</TitleLine>
+              <TitleLine>전문가의 완성도</TitleLine>
               <TitleLine>
-                IT 전문가 그룹 <TitleHighlight>테크사피엔스</TitleHighlight>
+                IT 전문  <TitleHighlight>테크사피엔스</TitleHighlight>
               </TitleLine>
             </Title>
             <Subtitle
@@ -342,14 +340,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <TypingAnimation text="AI 자동화와 글로벌 24시간 개발팀으로" speed={80} />
+              <TypingAnimation text="검증된 실력, 테크사피엔스와 함께하세요" speed={80} />
             </Subtitle>
             <Description
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              50% 저렴하게, 2배 빠르게
             </Description>
             <ButtonGroup
               initial={{ opacity: 0, y: 30 }}
@@ -373,21 +370,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
             </ButtonGroup>
           </TextContent>
           <VisualContent>
-            <ThreeDIcon
+            <ServiceIcon
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.5 }}
-            >
-              <IconLayer $depth={0} $color="linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)">
-                TS
-              </IconLayer>
-              <IconLayer $depth={1} $color="linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)">
-                TS
-              </IconLayer>
-              <IconLayer $depth={2} $color="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
-                TS
-              </IconLayer>
-            </ThreeDIcon>
+            />
           </VisualContent>
         </Content>
       </MainHero>
@@ -400,13 +387,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
             viewport={{ once: true }}
           >
             <CardHeader>
-              <CardTitle>SyncFlow</CardTitle>
+              <CardTitle>시스템 구축</CardTitle>
               <CardIcon $color="linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)">
-                👥
+                🏗️
               </CardIcon>
             </CardHeader>
             <CardDescription>
-              회의와 문서 작업 시간을 획기적으로 줄이고, 팀 협업 효율을 극대화 해보세요.
+              기업의 비즈니스 요구사항에 맞는 맞춤형 시스템을 구축하여 업무 효율성을 극대화합니다.
             </CardDescription>
             <CardArrow>→</CardArrow>
           </FeatureCard>
@@ -417,13 +404,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
             viewport={{ once: true }}
           >
             <CardHeader>
-              <CardTitle>LLM 포털</CardTitle>
+              <CardTitle>클라우드 솔루션</CardTitle>
               <CardIcon $color="linear-gradient(135deg, #10b981 0%, #059669 100%)">
-                🛡️
+                ☁️
               </CardIcon>
             </CardHeader>
             <CardDescription>
-              복잡한 LLM 연동을 단일 게이트웨이로 단순화하고, 보안·비용까지 중앙에서 안전하게 관리하세요.
+              안정적이고 확장 가능한 클라우드 인프라 구축으로 비용 효율성과 성능을 동시에 확보합니다.
             </CardDescription>
             <CardArrow>→</CardArrow>
           </FeatureCard>

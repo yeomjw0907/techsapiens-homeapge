@@ -235,7 +235,7 @@ const AboutSection: React.FC = () => {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          테크레디가 만드는 개발의 미래
+          테크사피엔스가 만드는 개발의 미래
         </SectionTitle>
         <SectionDescription
           initial={{ opacity: 0, y: 30 }}

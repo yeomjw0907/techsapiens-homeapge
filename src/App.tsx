@@ -9,6 +9,7 @@ import HomePage from './pages/HomePage';
 import ProjectPage from './pages/ProjectPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import AdminPage from './pages/AdminPage';
+import PolicyPage from './pages/PolicyPage';
 
 function App() {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -27,6 +28,7 @@ function App() {
           <Route path="/projects" element={<ProjectPage />} />
           <Route path="/projects/:id" element={<ProjectDetailPage onContactClick={openContactModal} />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/policy" element={<PolicyPage />} />
         </Routes>
           <ContactModal isOpen={isContactModalOpen} onClose={closeContactModal} />
         </div>

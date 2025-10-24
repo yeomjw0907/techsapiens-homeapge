@@ -513,7 +513,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                   />
                   <CheckboxLabel>
                     개인정보 수집 및 이용에 동의합니다. 
-                    <PrivacyLink href="#" target="_blank">개인정보처리방침</PrivacyLink>을 확인했습니다.
+                    <PrivacyLink href="/policy" target="_blank">개인정보처리방침</PrivacyLink>을 확인했습니다.
                     <Required>*</Required>
                   </CheckboxLabel>
                 </CheckboxContainer>

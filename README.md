@@ -57,6 +57,14 @@ src/
 
 ## 🔄 버전 관리
 
+### v1.0.1 (2025-01-27)
+- **TypeScript 타입 에러 수정**
+  - Styled Components 테마 타입 정의 추가 (styled.d.ts)
+  - GlobalStyle export 문제 수정
+  - Header 컴포넌트 scrolled prop 타입 정의
+  - tsconfig.json에 타입 정의 파일 포함
+  - 모든 TypeScript 컴파일 에러 해결
+
 ### v1.0.0 (2025-01-27)
 - **초기 릴리스**
   - React + TypeScript 기반 프로젝트 설정

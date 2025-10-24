@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
 import { supabase, getProjects, getInquiries, createProject, updateProject, deleteProject, createInquiry, updateInquiry, deleteInquiry, Project, Inquiry } from '../lib/supabase';
 
 const AdminContainer = styled.div`

@@ -1438,7 +1438,7 @@ const AdminPage: React.FC = () => {
               <InquiryDetailButton 
                 $variant="danger"
                 onClick={() => {
-                  if (confirm('정말로 이 문의사항을 삭제하시겠습니까?')) {
+                  if (window.confirm('정말로 이 문의사항을 삭제하시겠습니까?')) {
                     handleDeleteInquiry(selectedInquiry.id);
                     setShowInquiryDetail(false);
                   }

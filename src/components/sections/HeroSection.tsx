@@ -692,55 +692,60 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
             </>
           )}
 
-          {interviewData.currentStep > 0 && interviewData.currentStep <= interviewQuestions.length && (
-            <InterviewContainer
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <InterviewQuestion>
-                {interviewQuestions[interviewData.currentStep - 1].question}
-              </InterviewQuestion>
-              
-              {interviewQuestions[interviewData.currentStep - 1].type === 'select' ? (
-                <OptionGrid>
-                  {interviewQuestions[interviewData.currentStep - 1].options.map((option, index) => (
-                    <OptionButton
-                      key={index}
-                      onClick={() => handleInterviewAnswer(option)}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      {option}
-                    </OptionButton>
-                  ))}
-                </OptionGrid>
-              ) : (
-                <form onSubmit={(e) => {
-                  e.preventDefault();
-                  const input = e.currentTarget.querySelector('input') as HTMLInputElement;
-                  if (input.value.trim()) {
-                    handleInterviewAnswer(input.value);
-                    input.value = '';
-                  }
-                }}>
-                  <TextInput
-                    type="text"
-                    placeholder={interviewQuestions[interviewData.currentStep - 1].placeholder}
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        if (e.currentTarget.value.trim()) {
-                          handleInterviewAnswer(e.currentTarget.value);
-                          e.currentTarget.value = '';
+          {interviewData.currentStep > 0 && interviewData.currentStep <= interviewQuestions.length && (() => {
+            const currentQuestion = interviewQuestions[interviewData.currentStep - 1];
+            if (!currentQuestion) return null;
+            
+            return (
+              <InterviewContainer
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <InterviewQuestion>
+                  {currentQuestion.question}
+                </InterviewQuestion>
+                
+                {currentQuestion.type === 'select' ? (
+                  <OptionGrid>
+                    {currentQuestion.options?.map((option, index) => (
+                      <OptionButton
+                        key={index}
+                        onClick={() => handleInterviewAnswer(option)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        {option}
+                      </OptionButton>
+                    ))}
+                  </OptionGrid>
+                ) : (
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    const input = e.currentTarget.querySelector('input') as HTMLInputElement;
+                    if (input.value.trim()) {
+                      handleInterviewAnswer(input.value);
+                      input.value = '';
+                    }
+                  }}>
+                    <TextInput
+                      type="text"
+                      placeholder={currentQuestion.placeholder}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          if (e.currentTarget.value.trim()) {
+                            handleInterviewAnswer(e.currentTarget.value);
+                            e.currentTarget.value = '';
+                          }
                         }
-                      }
-                    }}
-                  />
-                </form>
-              )}
-            </InterviewContainer>
-          )}
+                      }}
+                    />
+                  </form>
+                )}
+              </InterviewContainer>
+            );
+          })()}
 
           {showSimilarPortfolio && (
             <SimilarPortfolioContainer

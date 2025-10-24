@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 const HeroContainer = styled.section`
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   position: relative;
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   overflow: hidden;
@@ -17,10 +17,17 @@ const BackgroundPattern = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
-  background-size: 100px 100px;
+  background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+  z-index: 1;
+`;
+
+const MainHero = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 2;
 `;
 
 const Content = styled.div`
@@ -31,8 +38,6 @@ const Content = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
   align-items: center;
-  position: relative;
-  z-index: 2;
 
   @media (max-width: ${props => props.theme.breakpoints.tablet}) {
     grid-template-columns: 1fr;
@@ -50,7 +55,7 @@ const TextContent = styled.div`
 const Title = styled(motion.h1)`
   font-size: 3.5rem;
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.2;
   margin-bottom: 1rem;
 
   @media (max-width: ${props => props.theme.breakpoints.tablet}) {
@@ -60,6 +65,18 @@ const Title = styled(motion.h1)`
   @media (max-width: ${props => props.theme.breakpoints.mobile}) {
     font-size: 2rem;
   }
+`;
+
+const TitleLine = styled.span`
+  display: block;
+  color: white;
+`;
+
+const TitleHighlight = styled.span`
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 `;
 
 const Subtitle = styled(motion.p)`
@@ -121,76 +138,116 @@ const SecondaryButton = styled(motion.button)`
 `;
 
 const VisualContent = styled.div`
-  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const FloatingCards = styled.div`
   position: relative;
-  width: 100%;
-  height: 400px;
 `;
 
-const Card = styled(motion.div)`
+const ThreeDIcon = styled(motion.div)`
+  width: 200px;
+  height: 200px;
+  position: relative;
+  transform-style: preserve-3d;
+`;
+
+const IconLayer = styled.div<{ $depth: number; $color: string }>`
   position: absolute;
+  width: ${props => 200 - props.$depth * 20}px;
+  height: ${props => 200 - props.$depth * 20}px;
+  background: ${props => props.$color};
+  border-radius: 20px;
+  transform: translateZ(${props => props.$depth * 30}px) rotateX(${props => props.$depth * 5}deg) rotateY(${props => props.$depth * 10}deg);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+  font-weight: bold;
+`;
+
+const CardsSection = styled.div`
+  padding: 4rem 0;
+  position: relative;
+  z-index: 2;
+`;
+
+const CardsContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+
+  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+`;
+
+const FeatureCard = styled(motion.div)`
   background: ${props => props.theme.colors.surface};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.lg};
   padding: 2rem;
-  backdrop-filter: blur(10px);
-  box-shadow: ${props => props.theme.shadows.xl};
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: ${props => props.theme.shadows.xl};
+  }
 `;
 
-const Card1 = styled(Card)`
-  top: 0;
-  left: 0;
-  width: 280px;
-  z-index: 3;
-`;
-
-const Card2 = styled(Card)`
-  top: 60px;
-  right: 0;
-  width: 280px;
-  z-index: 2;
-`;
-
-const CardIcon = styled.div`
-  width: 48px;
-  height: 48px;
-  background: ${props => props.theme.colors.gradient};
-  border-radius: ${props => props.theme.borderRadius.md};
+const CardHeader = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
 `;
 
 const CardTitle = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: white;
+  margin: 0;
+`;
+
+const CardIcon = styled.div<{ $color: string }>`
+  width: 60px;
+  height: 60px;
+  background: ${props => props.$color};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
 `;
 
 const CardDescription = styled.p`
   color: ${props => props.theme.colors.textSecondary};
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
 `;
 
-const CardLink = styled.a`
-  color: ${props => props.theme.colors.primary};
-  font-weight: 500;
-  font-size: 0.9rem;
-  text-decoration: none;
+const CardArrow = styled.div`
+  width: 40px;
+  height: 40px;
+  background: ${props => props.theme.colors.primary};
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover {
-    text-decoration: underline;
+    transform: scale(1.1);
   }
 `;
 
@@ -213,82 +270,111 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
   return (
     <HeroContainer id="home">
       <BackgroundPattern />
-      <Content>
-        <TextContent>
-          <Title
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
+      <MainHero>
+        <Content>
+          <TextContent>
+            <Title
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <TitleLine>AI의 속도, 전문가의 완성도</TitleLine>
+              <TitleLine>
+                IT 전문가 그룹 <TitleHighlight>테크레디</TitleHighlight>
+              </TitleLine>
+            </Title>
+            <Subtitle
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              AI 자동화와 글로벌 24시간 개발팀으로
+            </Subtitle>
+            <Description
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              50% 저렴하게, 2배 빠르게
+            </Description>
+            <ButtonGroup
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <PrimaryButton
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={scrollToServices}
+              >
+                서비스 보기
+              </PrimaryButton>
+              <SecondaryButton
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleContactClick}
+              >
+                문의하기
+              </SecondaryButton>
+            </ButtonGroup>
+          </TextContent>
+          <VisualContent>
+            <ThreeDIcon
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.5 }}
+            >
+              <IconLayer $depth={0} $color="linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)">
+                TS
+              </IconLayer>
+              <IconLayer $depth={1} $color="linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)">
+                TS
+              </IconLayer>
+              <IconLayer $depth={2} $color="linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)">
+                TS
+              </IconLayer>
+            </ThreeDIcon>
+          </VisualContent>
+        </Content>
+      </MainHero>
+      <CardsSection>
+        <CardsContainer>
+          <FeatureCard
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
           >
-            AI의 속도, 전문가의 완성도
-          </Title>
-          <Subtitle
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            IT 전문가 그룹 테크레디
-          </Subtitle>
-          <Description
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            AI 자동화와 글로벌 24시간 개발팀으로<br />
-            50% 저렴하게, 2배 빠르게
-          </Description>
-          <ButtonGroup
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            <PrimaryButton
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={scrollToServices}
-            >
-              자세히 보기
-            </PrimaryButton>
-            <SecondaryButton
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleContactClick}
-            >
-              문의하기
-            </SecondaryButton>
-          </ButtonGroup>
-        </TextContent>
-        <VisualContent>
-          <FloatingCards>
-            <Card1
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-            >
-              <CardIcon>⚡</CardIcon>
+            <CardHeader>
               <CardTitle>SyncFlow</CardTitle>
-              <CardDescription>
-                회의와 문서 작업 시간을 획기적으로 줄이고,<br />
-                팀 협업 효율을 극대화 해보세요.
-              </CardDescription>
-              <CardLink href="#">더보기</CardLink>
-            </Card1>
-            <Card2
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 1 }}
-            >
-              <CardIcon>🤖</CardIcon>
-              <CardTitle>LLM 포탈</CardTitle>
-              <CardDescription>
-                복잡한 LLM 연동을 단일 게이트웨이로 단순화하고,<br />
-                보안·비용까지 중앙에서 안전하게 관리하세요.
-              </CardDescription>
-              <CardLink href="#">더보기</CardLink>
-            </Card2>
-          </FloatingCards>
-        </VisualContent>
-      </Content>
+              <CardIcon $color="linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)">
+                👥
+              </CardIcon>
+            </CardHeader>
+            <CardDescription>
+              회의와 문서 작업 시간을 획기적으로 줄이고, 팀 협업 효율을 극대화 해보세요.
+            </CardDescription>
+            <CardArrow>→</CardArrow>
+          </FeatureCard>
+          <FeatureCard
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <CardHeader>
+              <CardTitle>LLM 포털</CardTitle>
+              <CardIcon $color="linear-gradient(135deg, #10b981 0%, #059669 100%)">
+                🛡️
+              </CardIcon>
+            </CardHeader>
+            <CardDescription>
+              복잡한 LLM 연동을 단일 게이트웨이로 단순화하고, 보안·비용까지 중앙에서 안전하게 관리하세요.
+            </CardDescription>
+            <CardArrow>→</CardArrow>
+          </FeatureCard>
+        </CardsContainer>
+      </CardsSection>
     </HeroContainer>
   );
 };

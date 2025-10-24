@@ -172,9 +172,14 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
   }, []);
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (location.pathname !== '/') {
+      // 메인 페이지가 아닌 경우 메인 페이지로 이동 후 스크롤
+      window.location.href = `/#${sectionId}`;
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
     setMobileMenuOpen(false);
   };
@@ -240,6 +245,14 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
             </NavLink>
           </NavItem>
           <NavItem>
+            <NavLink 
+              to="/admin"
+              $isActive={location.pathname === '/admin'}
+            >
+              관리자
+            </NavLink>
+          </NavItem>
+          <NavItem>
             <ContactButton
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -302,6 +315,14 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
               }}
             >
               회사소개
+            </MobileNavLink>
+          </MobileNavItem>
+          <MobileNavItem>
+            <MobileNavLink 
+              to="/admin"
+              $isActive={location.pathname === '/admin'}
+            >
+              관리자
             </MobileNavLink>
           </MobileNavItem>
           <MobileNavItem>

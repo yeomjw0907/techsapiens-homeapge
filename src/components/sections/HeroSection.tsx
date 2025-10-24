@@ -123,7 +123,8 @@ const SendButton = styled(motion.button)`
 
   &:hover {
     background: ${props => props.theme.colors.primary};
-    transform: translateY(-50%) scale(1.05);
+    transform: translateY(-50%);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
   }
 
   &:disabled {
@@ -132,35 +133,69 @@ const SendButton = styled(motion.button)`
   }
 `;
 
-const LoadingSpinner = styled(motion.div)`
-  width: 1.5rem;
-  height: 1.5rem;
-  border: 2px solid transparent;
-  border-top: 2px solid white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+`;
 
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+const LoadingSpinner = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
+const LoadingDot = styled.div`
+  width: 12px;
+  height: 12px;
+  background: ${props => props.theme.colors.primary};
+  border-radius: 50%;
+  animation: loading 1.4s infinite ease-in-out both;
+
+  &:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+
+  &:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+
+  @keyframes loading {
+    0%, 80%, 100% {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 `;
 
-const LoadingOverlay = styled(motion.div)`
+const LoadingText = styled.p`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+`;
+
+const BacklightOverlay = styled(motion.div)`
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, transparent, rgba(99, 102, 241, 0.3), transparent);
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(135deg, 
+    rgba(99, 102, 241, 0.1) 0%, 
+    rgba(99, 102, 241, 0.3) 50%, 
+    rgba(99, 102, 241, 0.1) 100%
+  );
   border-radius: ${props => props.theme.borderRadius.lg};
   z-index: -1;
-  animation: shimmer 2s ease-in-out infinite;
-
-  @keyframes shimmer {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.8; }
-  }
+  opacity: 0;
+  transition: opacity 0.3s ease;
 `;
 
 const SuggestionContainer = styled(motion.div)`
@@ -261,8 +296,44 @@ const TextInput = styled.input`
 
 const SimilarPortfolioContainer = styled(motion.div)`
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   margin-top: 2rem;
+`;
+
+const ProposalCompleteMessage = styled(motion.div)`
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+`;
+
+const CompleteTitle = styled.h3`
+  color: #22c55e;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+`;
+
+const CompleteDescription = styled.p`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 1rem;
+  margin: 0;
+`;
+
+const PortfolioSection = styled.div`
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+`;
+
+const PortfolioLeft = styled.div`
+  flex: 1;
+`;
+
+const PortfolioRight = styled.div`
+  flex: 1;
 `;
 
 const SimilarPortfolioTitle = styled.h3`
@@ -270,12 +341,11 @@ const SimilarPortfolioTitle = styled.h3`
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  text-align: center;
 `;
 
 const PortfolioGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 `;
 
@@ -291,6 +361,17 @@ const PortfolioCard = styled(motion.div)`
     border-color: ${props => props.theme.colors.primary};
     transform: translateY(-2px);
   }
+`;
+
+const CategoryBadge = styled.span`
+  background: ${props => props.theme.colors.primary};
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: ${props => props.theme.borderRadius.sm};
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  display: inline-block;
 `;
 
 const PortfolioTitle = styled.h4`
@@ -317,6 +398,7 @@ const PortfolioTech = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  margin-bottom: 1rem;
 `;
 
 const TechTag = styled.span`
@@ -325,6 +407,22 @@ const TechTag = styled.span`
   padding: 0.25rem 0.5rem;
   border-radius: ${props => props.theme.borderRadius.sm};
   font-size: 0.8rem;
+`;
+
+const ViewProjectButton = styled(motion.button)`
+  background: transparent;
+  border: 1px solid ${props => props.theme.colors.primary};
+  color: ${props => props.theme.colors.primary};
+  padding: 0.5rem 1rem;
+  border-radius: ${props => props.theme.borderRadius.md};
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: ${props => props.theme.colors.primary};
+    color: white;
+  }
 `;
 
 const FinalButton = styled(motion.button)`
@@ -499,19 +597,22 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
       title: "대형 유통사 통합 ERP 시스템",
       client: "A유통그룹",
       description: "전사 통합 ERP 시스템 구축으로 업무 효율 40% 향상",
-      tech: ["Java", "Spring Boot", "Oracle", "Redis"]
+      tech: ["Java", "Spring Boot", "Oracle", "Redis"],
+      category: "신규"
     },
     {
       title: "금융권 클라우드 인프라",
       client: "B금융지주", 
       description: "AWS 기반 고가용성 클라우드 인프라 구축",
-      tech: ["AWS", "Kubernetes", "Docker", "Terraform"]
+      tech: ["AWS", "Kubernetes", "Docker", "Terraform"],
+      category: "컨설팅"
     },
     {
       title: "제조사 스마트팩토리 플랫폼",
       client: "C제조사",
       description: "실시간 생산 현황 모니터링 및 설비 관리 플랫폼",
-      tech: ["Next.js", "Node.js", "TypeScript", "PostgreSQL"]
+      tech: ["Next.js", "Node.js", "TypeScript", "PostgreSQL"],
+      category: "유지보수"
     }
   ];
 
@@ -554,12 +655,20 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                   <SendButton
                     type="submit"
                     disabled={!prompt.trim() || isGenerating}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1 }}
+                    whileTap={{ scale: 1 }}
                   >
-                    {isGenerating ? <LoadingSpinner /> : '→'}
+                    {isGenerating ? (
+                      <LoadingContainer>
+                        <LoadingSpinner>
+                          <LoadingDot />
+                          <LoadingDot />
+                          <LoadingDot />
+                        </LoadingSpinner>
+                      </LoadingContainer>
+                    ) : '→'}
                   </SendButton>
-                  {isGenerating && <LoadingOverlay />}
+                  {isGenerating && <BacklightOverlay animate={{ opacity: 1 }} />}
                 </form>
               </PromptContainer>
 
@@ -639,28 +748,76 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <SimilarPortfolioTitle>
-                유사한 프로젝트 포트폴리오
-              </SimilarPortfolioTitle>
-              
-              <PortfolioGrid>
-                {similarPortfolios.map((portfolio, index) => (
-                  <PortfolioCard
-                    key={index}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <PortfolioTitle>{portfolio.title}</PortfolioTitle>
-                    <PortfolioClient>{portfolio.client}</PortfolioClient>
-                    <PortfolioDescription>{portfolio.description}</PortfolioDescription>
-                    <PortfolioTech>
-                      {portfolio.tech.map((tech, techIndex) => (
-                        <TechTag key={techIndex}>{tech}</TechTag>
-                      ))}
-                    </PortfolioTech>
-                  </PortfolioCard>
-                ))}
-              </PortfolioGrid>
+              <ProposalCompleteMessage
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <CompleteTitle>✅ 제안서 제작 완료</CompleteTitle>
+                <CompleteDescription>
+                  귀하의 요구사항에 맞는 맞춤형 제안서가 준비되었습니다.
+                </CompleteDescription>
+              </ProposalCompleteMessage>
+
+              <PortfolioSection>
+                <PortfolioLeft>
+                  <SimilarPortfolioTitle>유사한 프로젝트 포트폴리오</SimilarPortfolioTitle>
+                  <PortfolioGrid>
+                    {similarPortfolios.slice(0, 2).map((portfolio, index) => (
+                      <PortfolioCard
+                        key={index}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <CategoryBadge>{portfolio.category}</CategoryBadge>
+                        <PortfolioTitle>{portfolio.title}</PortfolioTitle>
+                        <PortfolioClient>{portfolio.client}</PortfolioClient>
+                        <PortfolioDescription>{portfolio.description}</PortfolioDescription>
+                        <PortfolioTech>
+                          {portfolio.tech.map((tech, techIndex) => (
+                            <TechTag key={techIndex}>{tech}</TechTag>
+                          ))}
+                        </PortfolioTech>
+                        <ViewProjectButton
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          프로젝트 보러가기 →
+                        </ViewProjectButton>
+                      </PortfolioCard>
+                    ))}
+                  </PortfolioGrid>
+                </PortfolioLeft>
+
+                <PortfolioRight>
+                  <SimilarPortfolioTitle>추천 프로젝트</SimilarPortfolioTitle>
+                  <PortfolioGrid>
+                    {similarPortfolios.slice(2).map((portfolio, index) => (
+                      <PortfolioCard
+                        key={index}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <CategoryBadge>{portfolio.category}</CategoryBadge>
+                        <PortfolioTitle>{portfolio.title}</PortfolioTitle>
+                        <PortfolioClient>{portfolio.client}</PortfolioClient>
+                        <PortfolioDescription>{portfolio.description}</PortfolioDescription>
+                        <PortfolioTech>
+                          {portfolio.tech.map((tech, techIndex) => (
+                            <TechTag key={techIndex}>{tech}</TechTag>
+                          ))}
+                        </PortfolioTech>
+                        <ViewProjectButton
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          프로젝트 보러가기 →
+                        </ViewProjectButton>
+                      </PortfolioCard>
+                    ))}
+                  </PortfolioGrid>
+                </PortfolioRight>
+              </PortfolioSection>
 
               <FinalButton
                 onClick={onContactClick}

@@ -170,6 +170,57 @@ const SubmitButton = styled(motion.button)`
   }
 `;
 
+const Select = styled.select`
+  background: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: 0.75rem 1rem;
+  color: white;
+  font-size: 0.9rem;
+  width: 100%;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.colors.primary};
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  option {
+    background: ${props => props.theme.colors.background};
+    color: white;
+  }
+`;
+
+const CheckboxContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+`;
+
+const Checkbox = styled.input`
+  margin-top: 0.25rem;
+  cursor: pointer;
+`;
+
+const CheckboxLabel = styled.label`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.9rem;
+  line-height: 1.5;
+  cursor: pointer;
+`;
+
+const PrivacyLink = styled.a`
+  color: ${props => props.theme.colors.primary};
+  text-decoration: underline;
+  
+  &:hover {
+    color: ${props => props.theme.colors.accent};
+  }
+`;
+
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -181,15 +232,21 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
     company: '',
     email: '',
     phone: '',
-    message: ''
+    message: '',
+    budget: '',
+    projectType: '',
+    timeline: '',
+    privacyAgreement: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -220,11 +277,57 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
         company: '',
         email: '',
         phone: '',
-        message: ''
+        message: '',
+        budget: '',
+        projectType: '',
+        timeline: '',
+        privacyAgreement: false
       });
       
-      // 성공 메시지 (선택사항)
-      alert('문의사항이 성공적으로 전송되었습니다. 빠른 시일 내에 연락드리겠습니다.');
+      // 성공 메시지 팝업
+      const successMessage = document.createElement('div');
+      successMessage.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+          color: white;
+          padding: 2rem;
+          border-radius: 12px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+          z-index: 10000;
+          text-align: center;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          max-width: 400px;
+          width: 90%;
+        ">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+          <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem; font-weight: 600;">문의 접수 완료!</h3>
+          <p style="margin: 0; font-size: 1rem; line-height: 1.5;">
+            문의사항이 성공적으로 전송되었습니다.<br>
+            빠른 시일 내에 연락드리겠습니다.
+          </p>
+        </div>
+        <div style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.5);
+          z-index: 9999;
+        "></div>
+      `;
+      document.body.appendChild(successMessage);
+      
+      // 3초 후 자동으로 제거
+      setTimeout(() => {
+        if (document.body.contains(successMessage)) {
+          document.body.removeChild(successMessage);
+        }
+      }, 3000);
       
     } catch (error) {
       console.error('Error submitting inquiry:', error);
@@ -322,6 +425,66 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                     />
                   </FormGroup>
                 </FormRow>
+
+                <FormRow>
+                  <FormGroup>
+                    <Label>
+                      프로젝트 유형 <Required>*</Required>
+                    </Label>
+                    <Select
+                      name="projectType"
+                      value={formData.projectType}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">프로젝트 유형을 선택해주세요</option>
+                      <option value="웹 개발">웹 개발</option>
+                      <option value="모바일 앱">모바일 앱</option>
+                      <option value="시스템 구축">시스템 구축</option>
+                      <option value="클라우드 마이그레이션">클라우드 마이그레이션</option>
+                      <option value="AI/ML 솔루션">AI/ML 솔루션</option>
+                      <option value="기타">기타</option>
+                    </Select>
+                  </FormGroup>
+                  <FormGroup>
+                    <Label>
+                      예상 예산 <Required>*</Required>
+                    </Label>
+                    <Select
+                      name="budget"
+                      value={formData.budget}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">예산 범위를 선택해주세요</option>
+                      <option value="1,000만원 미만">1,000만원 미만</option>
+                      <option value="1,000만원 - 3,000만원">1,000만원 - 3,000만원</option>
+                      <option value="3,000만원 - 5,000만원">3,000만원 - 5,000만원</option>
+                      <option value="5,000만원 - 1억원">5,000만원 - 1억원</option>
+                      <option value="1억원 이상">1억원 이상</option>
+                      <option value="협의">협의</option>
+                    </Select>
+                  </FormGroup>
+                </FormRow>
+
+                <FormGroup>
+                  <Label>
+                    프로젝트 일정 <Required>*</Required>
+                  </Label>
+                  <Select
+                    name="timeline"
+                    value={formData.timeline}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">프로젝트 일정을 선택해주세요</option>
+                    <option value="1개월 이내">1개월 이내</option>
+                    <option value="1-3개월">1-3개월</option>
+                    <option value="3-6개월">3-6개월</option>
+                    <option value="6개월 이상">6개월 이상</option>
+                    <option value="협의">협의</option>
+                  </Select>
+                </FormGroup>
                 
                 <FormGroup>
                   <Label>
@@ -335,10 +498,25 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
                     required
                   />
                 </FormGroup>
+
+                <CheckboxContainer>
+                  <Checkbox
+                    type="checkbox"
+                    name="privacyAgreement"
+                    checked={formData.privacyAgreement}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <CheckboxLabel>
+                    개인정보 수집 및 이용에 동의합니다. 
+                    <PrivacyLink href="#" target="_blank">개인정보처리방침</PrivacyLink>을 확인했습니다.
+                    <Required>*</Required>
+                  </CheckboxLabel>
+                </CheckboxContainer>
                 
                 <SubmitButton
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !formData.privacyAgreement}
                   whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                   whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                 >

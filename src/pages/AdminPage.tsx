@@ -226,6 +226,28 @@ const FieldValue = styled.span`
 const InquiryActions = styled.div`
   display: flex;
   gap: 0.5rem;
+  align-items: center;
+`;
+
+const StatusSelect = styled.select`
+  background: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.sm};
+  padding: 0.5rem;
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-right: 0.5rem;
+
+  &:focus {
+    outline: none;
+    border-color: ${props => props.theme.colors.primary};
+  }
+
+  option {
+    background: ${props => props.theme.colors.background};
+    color: white;
+  }
 `;
 
 const AddButton = styled.button`
@@ -377,6 +399,18 @@ const AdminPage: React.FC = () => {
     }
   };
 
+  const handleStatusChange = async (id: number, newStatus: string) => {
+    try {
+      await updateInquiry(id, { status: newStatus as any });
+      setInquiries(inquiries.map(inquiry => 
+        inquiry.id === id ? { ...inquiry, status: newStatus as any } : inquiry
+      ));
+    } catch (error) {
+      console.error('Error updating inquiry status:', error);
+      alert('상태 변경 중 오류가 발생했습니다.');
+    }
+  };
+
   if (!isLoggedIn) {
     return (
       <AdminContainer>
@@ -480,20 +514,24 @@ const AdminPage: React.FC = () => {
                         <FieldValue>{inquiry.phone} ({inquiry.email})</FieldValue>
                       </InquiryField>
                       <InquiryField>
-                        <FieldLabel>프로젝트 유형:</FieldLabel>
-                        <FieldValue>{inquiry.project_type}</FieldValue>
-                      </InquiryField>
-                      <InquiryField>
-                        <FieldLabel>예산:</FieldLabel>
-                        <FieldValue>{inquiry.budget}</FieldValue>
-                      </InquiryField>
-                      <InquiryField>
                         <FieldLabel>문의 내용:</FieldLabel>
-                        <FieldValue>{inquiry.description}</FieldValue>
+                        <FieldValue>{inquiry.message}</FieldValue>
+                      </InquiryField>
+                      <InquiryField>
+                        <FieldLabel>현재 상태:</FieldLabel>
+                        <FieldValue>{inquiry.status}</FieldValue>
                       </InquiryField>
                     </InquiryContent>
                     <InquiryActions>
-                      <ActionButton $variant="primary">답변하기</ActionButton>
+                      <StatusSelect 
+                        value={inquiry.status} 
+                        onChange={(e) => handleStatusChange(inquiry.id, e.target.value)}
+                      >
+                        <option value="new">컨택전</option>
+                        <option value="contacted">컨택중</option>
+                        <option value="in_progress">프로젝트 진행</option>
+                        <option value="completed">프로젝트 불가</option>
+                      </StatusSelect>
                       <ActionButton $variant="secondary">상세보기</ActionButton>
                       <ActionButton $variant="danger" onClick={() => handleDeleteInquiry(inquiry.id)}>삭제</ActionButton>
                     </InquiryActions>

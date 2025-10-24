@@ -405,7 +405,7 @@ const Label = styled.label`
   font-size: 0.9rem;
 `;
 
-const Input = styled.input`
+const ModalInput = styled.input`
   background: ${props => props.theme.colors.background};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.md};
@@ -813,7 +813,7 @@ const AdminPage: React.FC = () => {
               <FormRow>
                 <FormGroup>
                   <Label>프로젝트 제목 *</Label>
-                  <Input
+                  <ModalInput
                     type="text"
                     name="title"
                     value={newProject.title}
@@ -824,7 +824,7 @@ const AdminPage: React.FC = () => {
                 </FormGroup>
                 <FormGroup>
                   <Label>클라이언트 *</Label>
-                  <Input
+                  <ModalInput
                     type="text"
                     name="client"
                     value={newProject.client}
@@ -849,7 +849,7 @@ const AdminPage: React.FC = () => {
               <FormRow>
                 <FormGroup>
                   <Label>시작일 *</Label>
-                  <Input
+                  <ModalInput
                     type="date"
                     name="start_date"
                     value={newProject.start_date}
@@ -859,7 +859,7 @@ const AdminPage: React.FC = () => {
                 </FormGroup>
                 <FormGroup>
                   <Label>종료일</Label>
-                  <Input
+                  <ModalInput
                     type="date"
                     name="end_date"
                     value={newProject.end_date}
@@ -884,7 +884,7 @@ const AdminPage: React.FC = () => {
                 </FormGroup>
                 <FormGroup>
                   <Label>카테고리</Label>
-                  <Input
+                  <ModalInput
                     type="text"
                     name="category"
                     value={newProject.category}
@@ -897,7 +897,7 @@ const AdminPage: React.FC = () => {
               <FormRow>
                 <FormGroup>
                   <Label>아이콘</Label>
-                  <Input
+                  <ModalInput
                     type="text"
                     name="icon"
                     value={newProject.icon}
@@ -907,7 +907,7 @@ const AdminPage: React.FC = () => {
                 </FormGroup>
                 <FormGroup>
                   <Label>기술 스택 (쉼표로 구분)</Label>
-                  <Input
+                  <ModalInput
                     type="text"
                     value={newProject.tech_stack.join(', ')}
                     onChange={handleTechStackChange}
@@ -918,7 +918,7 @@ const AdminPage: React.FC = () => {
 
               <FormGroup>
                 <Label>주요 성과 (쉼표로 구분)</Label>
-                <Input
+                <ModalInput
                   type="text"
                   value={newProject.achievements.join(', ')}
                   onChange={handleAchievementsChange}

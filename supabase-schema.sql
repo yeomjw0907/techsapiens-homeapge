@@ -27,6 +27,10 @@ CREATE TABLE inquiries (
   email VARCHAR(255) NOT NULL,
   phone VARCHAR(50) NOT NULL,
   message TEXT NOT NULL,
+  project_type VARCHAR(100),
+  budget VARCHAR(100),
+  timeline VARCHAR(100),
+  privacy_agreement BOOLEAN DEFAULT false,
   status VARCHAR(20) NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'in_progress', 'completed')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -52,9 +56,9 @@ INSERT INTO projects (title, description, client, status, start_date, end_date, 
 ('제조사 스마트팩토리 웹 플랫폼 개발', '실시간 생산 현황 모니터링 및 설비 관리를 위한 길 기반 플랫폼 개발.', 'C제조사', 'pending', '2023-09-01', '2024-03-31', ARRAY['Next.js', 'Node.js', 'TypeScript', 'PostgreSQL'], ARRAY['생산성 35% 향상', '불량률 50% 감소', '실시간 데이터 가시화'], '🏭', '개발');
 
 -- 샘플 문의사항 데이터
-INSERT INTO inquiries (name, company, email, phone, message, status) VALUES
-('김철수', 'D기업', 'kim@dcompany.com', '010-1234-5678', '회사 홈페이지 리뉴얼 프로젝트를 진행하고 싶습니다. 웹 개발 관련 문의드립니다.', 'new'),
-('이영희', 'E스타트업', 'lee@estartup.com', '010-9876-5432', 'iOS/Android 앱 개발 프로젝트 문의드립니다. 모바일 앱 개발 관련 상담을 받고 싶습니다.', 'new');
+INSERT INTO inquiries (name, company, email, phone, message, project_type, budget, timeline, privacy_agreement, status) VALUES
+('김철수', 'D기업', 'kim@dcompany.com', '010-1234-5678', '회사 홈페이지 리뉴얼 프로젝트를 진행하고 싶습니다. 웹 개발 관련 문의드립니다.', '웹 개발', '3,000만원 - 5,000만원', '3-6개월', true, 'new'),
+('이영희', 'E스타트업', 'lee@estartup.com', '010-9876-5432', 'iOS/Android 앱 개발 프로젝트 문의드립니다. 모바일 앱 개발 관련 상담을 받고 싶습니다.', '모바일 앱', '1,000만원 - 3,000만원', '1-3개월', true, 'new');
 
 -- RLS (Row Level Security) 정책 설정
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;

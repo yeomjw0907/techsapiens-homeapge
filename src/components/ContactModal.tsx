@@ -262,6 +262,10 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
         email: formData.email,
         phone: formData.phone,
         message: formData.message,
+        project_type: formData.projectType,
+        budget: formData.budget,
+        timeline: formData.timeline,
+        privacy_agreement: formData.privacyAgreement,
         status: 'new' as const
       };
       

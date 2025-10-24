@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useParams, Link } from 'react-router-dom';
+import { getProjects, Project } from '../lib/supabase';
 
 const ProjectDetailContainer = styled.div`
   min-height: 100vh;
@@ -243,28 +244,53 @@ interface ProjectDetailPageProps {
 
 const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ onContactClick }) => {
   const { id } = useParams<{ id: string }>();
-  
-  // 실제로는 API에서 데이터를 가져와야 하지만, 여기서는 하드코딩
-  const project = {
-    id: 1,
-    title: '대형 유통사 통합 ERP 시스템 구축',
-    client: 'A유통그룹',
-    date: '2024.01 - 2024.08',
-    description: '선사 사원리를 위한 한 ERP 시스설계 구축 시 내이너 마이그레이션 및 통합. 대규모 데이터 마이그레이션과 시스템 통합을 통해 기존 레거시 시스템을 현대적인 ERP 시스템으로 전환했습니다.',
-    techStack: ['Java', 'Spring Boot', 'Oracle', 'Redis', 'Kafka'],
-    achievements: [
-      '업무 효율 40% 향상',
-      '데이터 처리 속도 3배 개선',
-      '운영 비용 30% 절감',
-      '시스템 안정성 99.9% 달성',
-      '사용자 만족도 95% 달성'
-    ],
-    icon: '📊',
-    category: '구축',
-    duration: '8개월',
-    team: '15명',
-    budget: '5억원'
-  };
+  const [project, setProject] = useState<Project | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const projects = await getProjects();
+        const foundProject = projects.find(p => p.id === parseInt(id || '0'));
+        setProject(foundProject || null);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching project:', error);
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchProject();
+    }
+  }, [id]);
+
+  if (loading) {
+    return (
+      <ProjectDetailContainer>
+        <Container>
+          <div style={{ textAlign: 'center', padding: '4rem 0' }}>
+            로딩 중...
+          </div>
+        </Container>
+      </ProjectDetailContainer>
+    );
+  }
+
+  if (!project) {
+    return (
+      <ProjectDetailContainer>
+        <Container>
+          <div style={{ textAlign: 'center', padding: '4rem 0' }}>
+            <h1>프로젝트를 찾을 수 없습니다</h1>
+            <Link to="/projects" style={{ color: '#6366f1', textDecoration: 'none' }}>
+              프로젝트 목록으로 돌아가기
+            </Link>
+          </div>
+        </Container>
+      </ProjectDetailContainer>
+    );
+  }
 
   const handleContactClick = () => {
     onContactClick();
@@ -292,7 +318,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ onContactClick })
             </MetaItem>
             <MetaItem>
               <MetaLabel>기간</MetaLabel>
-              <MetaValue>{project.date}</MetaValue>
+              <MetaValue>{project.start_date} {project.end_date ? `- ${project.end_date}` : ''}</MetaValue>
             </MetaItem>
             <MetaItem>
               <MetaLabel>카테고리</MetaLabel>
@@ -302,7 +328,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ onContactClick })
         </ProjectHeader>
 
         <ProjectImage>
-          {project.icon}
+          {project.icon || '📊'}
         </ProjectImage>
 
         <ProjectContent>
@@ -314,7 +340,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ onContactClick })
 
             <SectionTitle>기술 스택</SectionTitle>
             <TechStack>
-              {project.techStack.map((tech, index) => (
+              {project.tech_stack?.map((tech, index) => (
                 <TechTag key={index}>{tech}</TechTag>
               ))}
             </TechStack>
@@ -322,7 +348,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ onContactClick })
             <SectionTitle>주요 성과</SectionTitle>
             <Achievements>
               <AchievementList>
-                {project.achievements.map((achievement, index) => (
+                {project.achievements?.map((achievement, index) => (
                   <AchievementItem key={index}>
                     {achievement}
                   </AchievementItem>
@@ -335,21 +361,27 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ onContactClick })
             <InfoCard>
               <InfoTitle>프로젝트 정보</InfoTitle>
               <InfoItem>
-                <InfoLabel>기간</InfoLabel>
-                <InfoValue>{project.duration}</InfoValue>
+                <InfoLabel>클라이언트</InfoLabel>
+                <InfoValue>{project.client}</InfoValue>
               </InfoItem>
               <InfoItem>
-                <InfoLabel>팀 규모</InfoLabel>
-                <InfoValue>{project.team}</InfoValue>
-              </InfoItem>
-              <InfoItem>
-                <InfoLabel>예산</InfoLabel>
-                <InfoValue>{project.budget}</InfoValue>
+                <InfoLabel>상태</InfoLabel>
+                <InfoValue>{project.status}</InfoValue>
               </InfoItem>
               <InfoItem>
                 <InfoLabel>카테고리</InfoLabel>
-                <InfoValue>{project.category}</InfoValue>
+                <InfoValue>{project.category || '기타'}</InfoValue>
               </InfoItem>
+              <InfoItem>
+                <InfoLabel>시작일</InfoLabel>
+                <InfoValue>{project.start_date}</InfoValue>
+              </InfoItem>
+              {project.end_date && (
+                <InfoItem>
+                  <InfoLabel>종료일</InfoLabel>
+                  <InfoValue>{project.end_date}</InfoValue>
+                </InfoItem>
+              )}
             </InfoCard>
 
             <CTAButton
@@ -367,3 +399,4 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ onContactClick })
 };
 
 export default ProjectDetailPage;
+

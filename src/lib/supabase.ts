@@ -31,6 +31,10 @@ export interface Inquiry {
   email: string;
   phone: string;
   message: string;
+  project_type?: string;
+  budget?: string;
+  timeline?: string;
+  privacy_agreement?: boolean;
   status: 'new' | 'contacted' | 'in_progress' | 'completed';
   created_at: string;
   updated_at: string;

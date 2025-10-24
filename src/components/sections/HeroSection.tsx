@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
@@ -21,6 +21,27 @@ const BackgroundPattern = styled.div`
   background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
               radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
   z-index: 1;
+  animation: float 20s ease-in-out infinite;
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    25% { transform: translateY(-20px) rotate(1deg); }
+    50% { transform: translateY(-10px) rotate(-1deg); }
+    75% { transform: translateY(-15px) rotate(0.5deg); }
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 30% 70%, rgba(99, 102, 241, 0.05) 0%, transparent 30%),
+      radial-gradient(circle at 70% 30%, rgba(139, 92, 246, 0.05) 0%, transparent 30%);
+    animation: float 15s ease-in-out infinite reverse;
+  }
 `;
 
 const MainHero = styled.div`
@@ -268,6 +289,38 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     onContactClick();
   };
 
+  const TypingText = styled.span`
+    border-right: 2px solid ${props => props.theme.colors.primary};
+    animation: blink 1s infinite;
+    
+    @keyframes blink {
+      0%, 50% { border-color: ${props => props.theme.colors.primary}; }
+      51%, 100% { border-color: transparent; }
+    }
+  `;
+
+  const TypingAnimation: React.FC<{ text: string; speed?: number }> = ({ text, speed = 100 }) => {
+    const [displayText, setDisplayText] = useState('');
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+      if (currentIndex < text.length) {
+        const timeout = setTimeout(() => {
+          setDisplayText(prev => prev + text[currentIndex]);
+          setCurrentIndex(prev => prev + 1);
+        }, speed);
+
+        return () => clearTimeout(timeout);
+      }
+    }, [currentIndex, text, speed]);
+
+    return (
+      <TypingText>
+        {displayText}
+      </TypingText>
+    );
+  };
+
   return (
     <HeroContainer id="home">
       <BackgroundPattern />
@@ -289,7 +342,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              AI 자동화와 글로벌 24시간 개발팀으로
+              <TypingAnimation text="AI 자동화와 글로벌 24시간 개발팀으로" speed={80} />
             </Subtitle>
             <Description
               initial={{ opacity: 0, y: 30 }}

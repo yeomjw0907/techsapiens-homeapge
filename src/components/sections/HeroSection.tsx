@@ -104,7 +104,7 @@ const PromptInput = styled.input`
   }
 `;
 
-const SendButton = styled(motion.button)`
+const SendButton = styled.button`
   position: absolute;
   right: 0.5rem;
   top: 50%;
@@ -195,7 +195,42 @@ const BacklightOverlay = styled(motion.div)`
   border-radius: ${props => props.theme.borderRadius.lg};
   z-index: -1;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  animation: pulse 2s ease-in-out infinite;
+
+  @keyframes pulse {
+    0%, 100% { 
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 0.8;
+      transform: scale(1.02);
+    }
+  }
+`;
+
+const TypingPlaceholder = styled.div`
+  position: absolute;
+  top: 1rem;
+  left: 1.5rem;
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 1rem;
+  pointer-events: none;
+  z-index: 1;
+`;
+
+const TypingCursor = styled.span`
+  display: inline-block;
+  width: 2px;
+  height: 1rem;
+  background: ${props => props.theme.colors.primary};
+  margin-left: 2px;
+  animation: blink 1s infinite;
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
 `;
 
 const SuggestionContainer = styled(motion.div)`
@@ -443,6 +478,218 @@ const FinalButton = styled(motion.button)`
   }
 `;
 
+const ProgressContainer = styled.div`
+  width: 100%;
+  margin-bottom: 2rem;
+`;
+
+const ProgressBar = styled.div`
+  width: 100%;
+  height: 4px;
+  background: ${props => props.theme.colors.surface};
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+`;
+
+const ProgressFill = styled(motion.div)`
+  height: 100%;
+  background: ${props => props.theme.colors.gradient};
+  border-radius: 2px;
+`;
+
+const ProgressText = styled.p`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0;
+`;
+
+const NavigationButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+`;
+
+const NavButton = styled(motion.button)`
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.border};
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: ${props => props.theme.borderRadius.md};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+
+  &:hover {
+    border-color: ${props => props.theme.colors.primary};
+    background: ${props => props.theme.colors.surfaceLight};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const NextButton = styled(NavButton)`
+  background: ${props => props.theme.colors.primary};
+  border-color: ${props => props.theme.colors.primary};
+  margin-left: auto;
+
+  &:hover {
+    background: ${props => props.theme.colors.primary};
+    transform: translateY(-1px);
+  }
+`;
+
+const CustomInput = styled.input`
+  width: 100%;
+  padding: 1rem;
+  background: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  color: white;
+  font-size: 1rem;
+  outline: none;
+  margin-top: 1rem;
+
+  &:focus {
+    border-color: ${props => props.theme.colors.primary};
+  }
+
+  &::placeholder {
+    color: ${props => props.theme.colors.textSecondary};
+  }
+`;
+
+const RecipePopup = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+`;
+
+const RecipeContainer = styled(motion.div)`
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+`;
+
+const RecipeHeader = styled.div`
+  padding: 2rem 2rem 1rem;
+  border-bottom: 1px solid ${props => props.theme.colors.border};
+  text-align: center;
+`;
+
+const RecipeTitle = styled.h2`
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+`;
+
+const RecipeDescription = styled.p`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 1rem;
+  margin: 0;
+`;
+
+const RecipeContent = styled.div`
+  padding: 2rem;
+`;
+
+const RecipeSection = styled.div`
+  margin-bottom: 2rem;
+`;
+
+const RecipeSectionTitle = styled.h3`
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+`;
+
+const RecipeField = styled.div`
+  margin-bottom: 1rem;
+`;
+
+const RecipeLabel = styled.label`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.9rem;
+  display: block;
+  margin-bottom: 0.5rem;
+`;
+
+const RecipeInput = styled.input`
+  width: 100%;
+  padding: 0.75rem;
+  background: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  color: white;
+  font-size: 0.9rem;
+  outline: none;
+
+  &:focus {
+    border-color: ${props => props.theme.colors.primary};
+  }
+`;
+
+const RecipeCheckbox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+`;
+
+const RecipeCheckboxInput = styled.input`
+  width: 1rem;
+  height: 1rem;
+`;
+
+const RecipeCheckboxLabel = styled.label`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.9rem;
+  cursor: pointer;
+`;
+
+const RecipeActions = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1rem 2rem 2rem;
+`;
+
+const RecipeButton = styled(motion.button)`
+  background: ${props => props.theme.colors.gradient};
+  color: white;
+  border: none;
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex: 1;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${props => props.theme.shadows.lg};
+  }
+`;
+
 // 사용하지 않는 스타일 컴포넌트들 제거됨
 
 interface HeroSectionProps {
@@ -469,6 +716,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     currentStep: 0
   });
   const [showSimilarPortfolio, setShowSimilarPortfolio] = useState(false);
+  const [showRecipePopup, setShowRecipePopup] = useState(false);
+  const [customProjectType, setCustomProjectType] = useState('');
+  const [featuresInput, setFeaturesInput] = useState('');
+  const [recipeData, setRecipeData] = useState({
+    name: '',
+    company: '',
+    email: '',
+    phone: '',
+    privacyAgreement: false
+  });
+  const [typingText, setTypingText] = useState('');
+  const [typingIndex, setTypingIndex] = useState(0);
 
   const interviewQuestions = [
     {
@@ -479,19 +738,32 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     {
       question: "예상 예산은 어느 정도인가요?",
       type: "select",
-      options: ["1,000만원 미만", "1,000만원 - 3,000만원", "3,000만원 - 5,000만원", "5,000만원 - 1억원", "1억원 이상", "협의"]
+      options: ["1,000만원 미만", "1,000만원 - 3,000만원", "3,000만원 - 5,000만원", "5,000만원 - 1억원", "1억원 이상", "상호 협의"]
     },
     {
       question: "프로젝트 완료 예상 기간은?",
       type: "select",
-      options: ["1개월 이내", "1-3개월", "3-6개월", "6개월 이상", "협의"]
+      options: ["1개월 이내", "1-3개월", "3-6개월", "6개월 이상", "상호 협의"]
     },
     {
-      question: "필요한 주요 기능들을 알려주세요 (쉼표로 구분)",
+      question: "필요한 주요 기능들을 알려주세요",
       type: "text",
       placeholder: "예: 사용자 관리, 결제 시스템, 상품 관리, 관리자 페이지"
     }
   ];
+
+  const placeholderText = "예: 온라인 쇼핑몰 개발이 필요합니다. 사용자 관리, 결제 시스템, 상품 관리 기능이 포함되어야 합니다.";
+
+  // 타이핑 애니메이션
+  useEffect(() => {
+    if (typingIndex < placeholderText.length) {
+      const timer = setTimeout(() => {
+        setTypingText(prev => prev + placeholderText[typingIndex]);
+        setTypingIndex(prev => prev + 1);
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [typingIndex, placeholderText]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -518,6 +790,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     
     if (currentQuestion.type === 'select') {
       if (currentQuestion.question.includes('프로젝트')) {
+        if (answer === '기타') {
+          setCustomProjectType('');
+          return; // 기타 선택 시 커스텀 입력 대기
+        }
         setInterviewData(prev => ({ ...prev, projectType: answer }));
       } else if (currentQuestion.question.includes('예산')) {
         setInterviewData(prev => ({ ...prev, budget: answer }));
@@ -532,9 +808,42 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     if (interviewData.currentStep < interviewQuestions.length) {
       setInterviewData(prev => ({ ...prev, currentStep: prev.currentStep + 1 }));
     } else {
-      // 인터뷰 완료 - 유사 포트폴리오 표시
-      setShowSimilarPortfolio(true);
+      // 인터뷰 완료 - 레시피 팝업 표시
+      setShowRecipePopup(true);
     }
+  };
+
+  const handleCustomProjectType = (value: string) => {
+    setCustomProjectType(value);
+    if (value.trim()) {
+      setInterviewData(prev => ({ ...prev, projectType: value }));
+      setInterviewData(prev => ({ ...prev, currentStep: prev.currentStep + 1 }));
+    }
+  };
+
+  const handleFeaturesInput = (value: string) => {
+    setFeaturesInput(value);
+  };
+
+  const handleNextStep = () => {
+    if (interviewData.currentStep === 4 && featuresInput.trim()) {
+      const features = featuresInput.split(',').map(f => f.trim()).filter(f => f);
+      setInterviewData(prev => ({ ...prev, features }));
+      setShowRecipePopup(true);
+    }
+  };
+
+  const handlePreviousStep = () => {
+    if (interviewData.currentStep > 1) {
+      setInterviewData(prev => ({ ...prev, currentStep: prev.currentStep - 1 }));
+    }
+  };
+
+  const handleRecipeSubmit = () => {
+    // 여기서 Supabase에 새로운 문의 저장
+    console.log('Recipe submitted:', { ...interviewData, ...recipeData });
+    setShowRecipePopup(false);
+    setShowSimilarPortfolio(true);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -655,8 +964,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                   <SendButton
                     type="submit"
                     disabled={!prompt.trim() || isGenerating}
-                    whileHover={{ scale: 1 }}
-                    whileTap={{ scale: 1 }}
                   >
                     {isGenerating ? (
                       <LoadingContainer>
@@ -669,6 +976,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                     ) : '→'}
                   </SendButton>
                   {isGenerating && <BacklightOverlay animate={{ opacity: 1 }} />}
+                  {!prompt && (
+                    <TypingPlaceholder>
+                      {typingText}
+                      <TypingCursor />
+                    </TypingPlaceholder>
+                  )}
                 </form>
               </PromptContainer>
 
@@ -702,50 +1015,196 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
               >
+                <ProgressContainer>
+                  <ProgressBar>
+                    <ProgressFill
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(interviewData.currentStep / interviewQuestions.length) * 100}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  </ProgressBar>
+                  <ProgressText>
+                    {interviewData.currentStep} / {interviewQuestions.length}
+                  </ProgressText>
+                </ProgressContainer>
+
                 <InterviewQuestion>
                   {currentQuestion.question}
                 </InterviewQuestion>
                 
                 {currentQuestion.type === 'select' ? (
-                  <OptionGrid>
-                    {currentQuestion.options?.map((option, index) => (
-                      <OptionButton
-                        key={index}
-                        onClick={() => handleInterviewAnswer(option)}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        {option}
-                      </OptionButton>
-                    ))}
-                  </OptionGrid>
+                  <>
+                    <OptionGrid>
+                      {currentQuestion.options?.map((option, index) => (
+                        <OptionButton
+                          key={index}
+                          onClick={() => handleInterviewAnswer(option)}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          {option}
+                        </OptionButton>
+                      ))}
+                    </OptionGrid>
+                    {interviewData.currentStep === 1 && customProjectType === '' && (
+                      <CustomInput
+                        type="text"
+                        placeholder="프로젝트 유형을 직접 입력해주세요"
+                        value={customProjectType}
+                        onChange={(e) => setCustomProjectType(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter' && customProjectType.trim()) {
+                            handleCustomProjectType(customProjectType);
+                          }
+                        }}
+                      />
+                    )}
+                  </>
                 ) : (
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    const input = e.currentTarget.querySelector('input') as HTMLInputElement;
-                    if (input.value.trim()) {
-                      handleInterviewAnswer(input.value);
-                      input.value = '';
-                    }
-                  }}>
+                  <>
                     <TextInput
                       type="text"
                       placeholder={currentQuestion.placeholder}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          if (e.currentTarget.value.trim()) {
-                            handleInterviewAnswer(e.currentTarget.value);
-                            e.currentTarget.value = '';
-                          }
-                        }
-                      }}
+                      value={featuresInput}
+                      onChange={(e) => handleFeaturesInput(e.target.value)}
                     />
-                  </form>
+                    <NavigationButtons>
+                      <NavButton
+                        onClick={handlePreviousStep}
+                        disabled={interviewData.currentStep === 1}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        이전
+                      </NavButton>
+                      <NextButton
+                        onClick={handleNextStep}
+                        disabled={!featuresInput.trim()}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        다음
+                      </NextButton>
+                    </NavigationButtons>
+                  </>
+                )}
+
+                {currentQuestion.type === 'select' && (
+                  <NavigationButtons>
+                    <NavButton
+                      onClick={handlePreviousStep}
+                      disabled={interviewData.currentStep === 1}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      이전
+                    </NavButton>
+                  </NavigationButtons>
                 )}
               </InterviewContainer>
             );
           })()}
+
+          {showRecipePopup && (
+            <RecipePopup
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <RecipeContainer
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+              >
+                <RecipeHeader>
+                  <RecipeTitle>🍳 맞춤 제안서 레시피</RecipeTitle>
+                  <RecipeDescription>
+                    귀하의 요구사항에 맞는 완벽한 제안서를 만들어드리겠습니다.
+                  </RecipeDescription>
+                </RecipeHeader>
+
+                <RecipeContent>
+                  <RecipeSection>
+                    <RecipeSectionTitle>📋 프로젝트 정보</RecipeSectionTitle>
+                    <RecipeField>
+                      <RecipeLabel>프로젝트 유형</RecipeLabel>
+                      <RecipeInput value={interviewData.projectType} readOnly />
+                    </RecipeField>
+                    <RecipeField>
+                      <RecipeLabel>예상 예산</RecipeLabel>
+                      <RecipeInput value={interviewData.budget} readOnly />
+                    </RecipeField>
+                    <RecipeField>
+                      <RecipeLabel>완료 예상 기간</RecipeLabel>
+                      <RecipeInput value={interviewData.timeline} readOnly />
+                    </RecipeField>
+                    <RecipeField>
+                      <RecipeLabel>주요 기능</RecipeLabel>
+                      <RecipeInput value={interviewData.features.join(', ')} readOnly />
+                    </RecipeField>
+                  </RecipeSection>
+
+                  <RecipeSection>
+                    <RecipeSectionTitle>📞 연락처 정보</RecipeSectionTitle>
+                    <RecipeField>
+                      <RecipeLabel>이름 *</RecipeLabel>
+                      <RecipeInput
+                        value={recipeData.name}
+                        onChange={(e) => setRecipeData(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="홍길동"
+                      />
+                    </RecipeField>
+                    <RecipeField>
+                      <RecipeLabel>회사명 *</RecipeLabel>
+                      <RecipeInput
+                        value={recipeData.company}
+                        onChange={(e) => setRecipeData(prev => ({ ...prev, company: e.target.value }))}
+                        placeholder="(주)테크사피엔스"
+                      />
+                    </RecipeField>
+                    <RecipeField>
+                      <RecipeLabel>이메일 *</RecipeLabel>
+                      <RecipeInput
+                        type="email"
+                        value={recipeData.email}
+                        onChange={(e) => setRecipeData(prev => ({ ...prev, email: e.target.value }))}
+                        placeholder="hong@company.com"
+                      />
+                    </RecipeField>
+                    <RecipeField>
+                      <RecipeLabel>연락처 *</RecipeLabel>
+                      <RecipeInput
+                        value={recipeData.phone}
+                        onChange={(e) => setRecipeData(prev => ({ ...prev, phone: e.target.value }))}
+                        placeholder="010-1234-5678"
+                      />
+                    </RecipeField>
+                    <RecipeCheckbox>
+                      <RecipeCheckboxInput
+                        type="checkbox"
+                        checked={recipeData.privacyAgreement}
+                        onChange={(e) => setRecipeData(prev => ({ ...prev, privacyAgreement: e.target.checked }))}
+                      />
+                      <RecipeCheckboxLabel>
+                        개인정보 처리방침에 동의합니다 *
+                      </RecipeCheckboxLabel>
+                    </RecipeCheckbox>
+                  </RecipeSection>
+                </RecipeContent>
+
+                <RecipeActions>
+                  <RecipeButton
+                    onClick={handleRecipeSubmit}
+                    disabled={!recipeData.name || !recipeData.company || !recipeData.email || !recipeData.phone || !recipeData.privacyAgreement}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    제안서 받기
+                  </RecipeButton>
+                </RecipeActions>
+              </RecipeContainer>
+            </RecipePopup>
+          )}
 
           {showSimilarPortfolio && (
             <SimilarPortfolioContainer
@@ -768,7 +1227,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                 <PortfolioLeft>
                   <SimilarPortfolioTitle>유사한 프로젝트 포트폴리오</SimilarPortfolioTitle>
                   <PortfolioGrid>
-                    {similarPortfolios.slice(0, 2).map((portfolio, index) => (
+                    {similarPortfolios.map((portfolio, index) => (
                       <PortfolioCard
                         key={index}
                         whileHover={{ scale: 1.02 }}
@@ -793,35 +1252,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
                     ))}
                   </PortfolioGrid>
                 </PortfolioLeft>
-
-                <PortfolioRight>
-                  <SimilarPortfolioTitle>추천 프로젝트</SimilarPortfolioTitle>
-                  <PortfolioGrid>
-                    {similarPortfolios.slice(2).map((portfolio, index) => (
-                      <PortfolioCard
-                        key={index}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <CategoryBadge>{portfolio.category}</CategoryBadge>
-                        <PortfolioTitle>{portfolio.title}</PortfolioTitle>
-                        <PortfolioClient>{portfolio.client}</PortfolioClient>
-                        <PortfolioDescription>{portfolio.description}</PortfolioDescription>
-                        <PortfolioTech>
-                          {portfolio.tech.map((tech, techIndex) => (
-                            <TechTag key={techIndex}>{tech}</TechTag>
-                          ))}
-                        </PortfolioTech>
-                        <ViewProjectButton
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          프로젝트 보러가기 →
-                        </ViewProjectButton>
-                      </PortfolioCard>
-                    ))}
-                  </PortfolioGrid>
-                </PortfolioRight>
               </PortfolioSection>
 
               <FinalButton

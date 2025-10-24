@@ -160,7 +160,6 @@ export const createInterviewInquiry = async (interviewData: {
     project_type: interviewData.projectType,
     budget: interviewData.budget,
     timeline: interviewData.timeline,
-    features: interviewData.features,
     privacy_agreement: contactData.privacyAgreement,
     status: 'new' as const,
     message: `프로젝트 유형: ${interviewData.projectType}\n예산: ${interviewData.budget}\n완료 기간: ${interviewData.timeline}\n주요 기능: ${interviewData.features.join(', ')}`

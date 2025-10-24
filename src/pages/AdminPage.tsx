@@ -512,6 +512,150 @@ const CategoryButton = styled.button<{ $selected: boolean }>`
   }
 `;
 
+const InquiryDetailModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+`;
+
+const InquiryDetailContainer = styled.div`
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.lg};
+  padding: 2rem;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+`;
+
+const InquiryDetailHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid ${props => props.theme.colors.border};
+`;
+
+const InquiryDetailTitle = styled.h2`
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+`;
+
+const InquiryDetailContent = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  
+  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const InquiryDetailSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const InquiryDetailField = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+const InquiryDetailLabel = styled.span`
+  color: ${props => props.theme.colors.primary};
+  font-weight: 600;
+  font-size: 0.9rem;
+`;
+
+const InquiryDetailValue = styled.div`
+  color: white;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 0.75rem;
+  background: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  min-height: 2.5rem;
+  display: flex;
+  align-items: center;
+`;
+
+const InquiryDetailMessage = styled.div`
+  color: white;
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 1rem;
+  background: ${props => props.theme.colors.background};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  min-height: 120px;
+  white-space: pre-wrap;
+`;
+
+const InquiryDetailActions = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid ${props => props.theme.colors.border};
+`;
+
+const InquiryDetailButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger' }>`
+  padding: 0.75rem 1.5rem;
+  border-radius: ${props => props.theme.borderRadius.md};
+  border: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  ${props => {
+    switch (props.$variant) {
+      case 'primary':
+        return `
+          background: ${props.theme.colors.gradient};
+          color: white;
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: ${props.theme.shadows.lg};
+          }
+        `;
+      case 'danger':
+        return `
+          background: #ef4444;
+          color: white;
+          &:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+          }
+        `;
+      default:
+        return `
+          background: ${props.theme.colors.background};
+          color: ${props.theme.colors.textSecondary};
+          border: 1px solid ${props.theme.colors.border};
+          &:hover {
+            background: ${props.theme.colors.surfaceLight};
+            color: white;
+          }
+        `;
+    }
+  }}
+`;
+
 const CATEGORIES = [
   '웹 개발',
   '모바일 앱',
@@ -537,6 +681,8 @@ const AdminPage: React.FC = () => {
   const [showAddProject, setShowAddProject] = useState(false);
   const [showEditProject, setShowEditProject] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [showInquiryDetail, setShowInquiryDetail] = useState(false);
+  const [selectedInquiry, setSelectedInquiry] = useState<Inquiry | null>(null);
   const [newProject, setNewProject] = useState({
     title: '',
     description: '',
@@ -691,6 +837,22 @@ const AdminPage: React.FC = () => {
       ...prev,
       category: category
     }));
+  };
+
+  const handleInquiryDetail = (inquiry: Inquiry) => {
+    setSelectedInquiry(inquiry);
+    setShowInquiryDetail(true);
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'new': return '컨택전';
+      case 'contacted': return '컨택중';
+      case 'in_progress': return '프로젝트 진행';
+      case 'completed': return '프로젝트 완료';
+      case 'rejected': return '프로젝트 불가';
+      default: return status;
+    }
   };
 
   const handleEditProject = (project: Project) => {
@@ -888,7 +1050,7 @@ const AdminPage: React.FC = () => {
                         <option value="completed">프로젝트 완료</option>
                         <option value="rejected">프로젝트 불가</option>
                       </StatusSelect>
-                      <ActionButton $variant="secondary">상세보기</ActionButton>
+                      <ActionButton $variant="secondary" onClick={() => handleInquiryDetail(inquiry)}>상세보기</ActionButton>
                       <ActionButton $variant="danger" onClick={() => handleDeleteInquiry(inquiry.id)}>삭제</ActionButton>
                     </InquiryActions>
                   </InquiryItem>
@@ -1173,6 +1335,120 @@ const AdminPage: React.FC = () => {
             </Form>
           </ModalContainer>
         </ModalOverlay>
+      )}
+
+      {showInquiryDetail && selectedInquiry && (
+        <InquiryDetailModal onClick={() => setShowInquiryDetail(false)}>
+          <InquiryDetailContainer onClick={(e) => e.stopPropagation()}>
+            <InquiryDetailHeader>
+              <InquiryDetailTitle>문의사항 상세보기</InquiryDetailTitle>
+              <CloseButton onClick={() => setShowInquiryDetail(false)}>×</CloseButton>
+            </InquiryDetailHeader>
+            
+            <InquiryDetailContent>
+              <InquiryDetailSection>
+                <InquiryDetailField>
+                  <InquiryDetailLabel>회사명</InquiryDetailLabel>
+                  <InquiryDetailValue>{selectedInquiry.company}</InquiryDetailValue>
+                </InquiryDetailField>
+                
+                <InquiryDetailField>
+                  <InquiryDetailLabel>담당자명</InquiryDetailLabel>
+                  <InquiryDetailValue>{selectedInquiry.name}</InquiryDetailValue>
+                </InquiryDetailField>
+                
+                <InquiryDetailField>
+                  <InquiryDetailLabel>이메일</InquiryDetailLabel>
+                  <InquiryDetailValue>{selectedInquiry.email}</InquiryDetailValue>
+                </InquiryDetailField>
+                
+                <InquiryDetailField>
+                  <InquiryDetailLabel>연락처</InquiryDetailLabel>
+                  <InquiryDetailValue>{selectedInquiry.phone}</InquiryDetailValue>
+                </InquiryDetailField>
+                
+                {selectedInquiry.project_type && (
+                  <InquiryDetailField>
+                    <InquiryDetailLabel>프로젝트 유형</InquiryDetailLabel>
+                    <InquiryDetailValue>{selectedInquiry.project_type}</InquiryDetailValue>
+                  </InquiryDetailField>
+                )}
+                
+                {selectedInquiry.budget && (
+                  <InquiryDetailField>
+                    <InquiryDetailLabel>예상 예산</InquiryDetailLabel>
+                    <InquiryDetailValue>{selectedInquiry.budget}</InquiryDetailValue>
+                  </InquiryDetailField>
+                )}
+              </InquiryDetailSection>
+              
+              <InquiryDetailSection>
+                {selectedInquiry.timeline && (
+                  <InquiryDetailField>
+                    <InquiryDetailLabel>프로젝트 일정</InquiryDetailLabel>
+                    <InquiryDetailValue>{selectedInquiry.timeline}</InquiryDetailValue>
+                  </InquiryDetailField>
+                )}
+                
+                <InquiryDetailField>
+                  <InquiryDetailLabel>개인정보 동의</InquiryDetailLabel>
+                  <InquiryDetailValue>
+                    {selectedInquiry.privacy_agreement ? '✅ 동의' : '❌ 미동의'}
+                  </InquiryDetailValue>
+                </InquiryDetailField>
+                
+                <InquiryDetailField>
+                  <InquiryDetailLabel>현재 상태</InquiryDetailLabel>
+                  <InquiryDetailValue>{getStatusText(selectedInquiry.status)}</InquiryDetailValue>
+                </InquiryDetailField>
+                
+                <InquiryDetailField>
+                  <InquiryDetailLabel>문의일시</InquiryDetailLabel>
+                  <InquiryDetailValue>{formatDate(selectedInquiry.created_at)}</InquiryDetailValue>
+                </InquiryDetailField>
+              </InquiryDetailSection>
+            </InquiryDetailContent>
+            
+            <InquiryDetailField style={{ marginTop: '2rem' }}>
+              <InquiryDetailLabel>문의 내용</InquiryDetailLabel>
+              <InquiryDetailMessage>{selectedInquiry.message}</InquiryDetailMessage>
+            </InquiryDetailField>
+            
+            <InquiryDetailActions>
+              <InquiryDetailButton 
+                $variant="primary"
+                onClick={() => {
+                  // 이메일 클라이언트 열기
+                  window.open(`mailto:${selectedInquiry.email}?subject=프로젝트 문의 답변&body=안녕하세요 ${selectedInquiry.name}님,`);
+                }}
+              >
+                이메일 답변
+              </InquiryDetailButton>
+              
+              <InquiryDetailButton 
+                $variant="secondary"
+                onClick={() => {
+                  // 전화 걸기
+                  window.open(`tel:${selectedInquiry.phone}`);
+                }}
+              >
+                전화 걸기
+              </InquiryDetailButton>
+              
+              <InquiryDetailButton 
+                $variant="danger"
+                onClick={() => {
+                  if (confirm('정말로 이 문의사항을 삭제하시겠습니까?')) {
+                    handleDeleteInquiry(selectedInquiry.id);
+                    setShowInquiryDetail(false);
+                  }
+                }}
+              >
+                삭제
+              </InquiryDetailButton>
+            </InquiryDetailActions>
+          </InquiryDetailContainer>
+        </InquiryDetailModal>
       )}
     </AdminContainer>
   );

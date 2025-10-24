@@ -1,0 +1,40 @@
+export const theme = {
+  colors: {
+    primary: '#6366f1',
+    secondary: '#8b5cf6',
+    accent: '#06b6d4',
+    background: '#0f0f23',
+    surface: '#1a1a2e',
+    surfaceLight: '#16213e',
+    text: '#ffffff',
+    textSecondary: '#a1a1aa',
+    border: '#374151',
+    gradient: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+    gradientSecondary: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+  },
+  breakpoints: {
+    mobile: '768px',
+    tablet: '1024px',
+    desktop: '1200px',
+  },
+  spacing: {
+    xs: '0.5rem',
+    sm: '1rem',
+    md: '1.5rem',
+    lg: '2rem',
+    xl: '3rem',
+    xxl: '4rem',
+  },
+  borderRadius: {
+    sm: '0.375rem',
+    md: '0.5rem',
+    lg: '0.75rem',
+    xl: '1rem',
+  },
+  shadows: {
+    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+  },
+};

@@ -1,25 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
+import { theme } from './styles/theme';
+import GlobalStyle from './styles/GlobalStyle';
+import Header from './components/Header';
+import ContactModal from './components/ContactModal';
+import HomePage from './pages/HomePage';
+import ProjectPage from './pages/ProjectPage';
+import ProjectDetailPage from './pages/ProjectDetailPage';
 
 function App() {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
+  const openContactModal = () => setIsContactModalOpen(true);
+  const closeContactModal = () => setIsContactModalOpen(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <Router>
+        <div className="App">
+          <Header onContactClick={openContactModal} />
+          <Routes>
+            <Route path="/" element={<HomePage onContactClick={openContactModal} />} />
+            <Route path="/projects" element={<ProjectPage />} />
+            <Route path="/projects/:id" element={<ProjectDetailPage onContactClick={openContactModal} />} />
+          </Routes>
+          <ContactModal isOpen={isContactModalOpen} onClose={closeContactModal} />
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 

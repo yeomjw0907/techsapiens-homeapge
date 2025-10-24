@@ -136,18 +136,6 @@ const TechTag = styled.span`
 const ServiceSection: React.FC = () => {
   const services = [
     {
-      icon: '⚡',
-      title: 'SyncFlow',
-      description: '회의와 문서 작업 시간을 획기적으로 줄이고, 팀 협업 효율을 극대화 해보세요.',
-      features: [
-        '실시간 문서 공유',
-        'AI 기반 요약',
-        '팀 협업 도구',
-        '자동 번역'
-      ],
-      techStack: ['React', 'Node.js', 'WebSocket', 'AI API']
-    },
-    {
       icon: '🤖',
       title: 'LLM 포탈',
       description: '복잡한 LLM 연동을 단일 게이트웨이로 단순화하고, 보안·비용까지 중앙에서 안전하게 관리하세요.',

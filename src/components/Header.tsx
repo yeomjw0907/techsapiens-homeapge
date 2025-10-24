@@ -111,7 +111,6 @@ const MobileMenuButton = styled(motion.button)`
 `;
 
 const MobileMenu = styled(motion.div)<{ $isOpen: boolean }>`
-  display: ${props => props.$isOpen ? 'block' : 'none'};
   position: absolute;
   top: 100%;
   left: 0;
@@ -122,6 +121,7 @@ const MobileMenu = styled(motion.div)<{ $isOpen: boolean }>`
   padding: 1rem;
   box-shadow: ${props => props.theme.shadows.lg};
   z-index: 1000;
+  overflow: hidden;
 
   @media (min-width: ${props => props.theme.breakpoints.mobile}) {
     display: none;
@@ -171,6 +171,23 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (mobileMenuOpen && !target.closest('[data-mobile-menu]')) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    if (mobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [mobileMenuOpen]);
+
   const scrollToSection = (sectionId: string) => {
     if (location.pathname !== '/') {
       // 메인 페이지가 아닌 경우 메인 페이지로 이동 후 스크롤
@@ -201,7 +218,7 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
           <NavItem>
             <NavLink 
               to="/" 
-              $isActive={location.pathname === '/'}
+              $isActive={false}
               onClick={(e) => {
                 e.preventDefault();
                 scrollToSection('services');
@@ -221,7 +238,7 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
           <NavItem>
             <NavLink 
               to="/" 
-              $isActive={location.pathname === '/'}
+              $isActive={false}
               onClick={(e) => {
                 e.preventDefault();
                 scrollToSection('about');
@@ -243,16 +260,27 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
         <MobileMenuButton
           onClick={toggleMobileMenu}
           whileTap={{ scale: 0.95 }}
+          data-mobile-menu
         >
           ☰
         </MobileMenuButton>
       </Nav>
-      <MobileMenu $isOpen={mobileMenuOpen}>
+      <MobileMenu 
+        $isOpen={mobileMenuOpen}
+        data-mobile-menu
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ 
+          opacity: mobileMenuOpen ? 1 : 0, 
+          y: mobileMenuOpen ? 0 : -20,
+          display: mobileMenuOpen ? 'block' : 'none'
+        }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+      >
         <MobileNavLinks>
           <MobileNavItem>
             <MobileNavLink 
               to="/" 
-              $isActive={location.pathname === '/'}
+              $isActive={false}
               onClick={(e) => {
                 e.preventDefault();
                 scrollToSection('services');
@@ -272,7 +300,7 @@ const Header: React.FC<HeaderProps> = ({ onContactClick }) => {
           <MobileNavItem>
             <MobileNavLink 
               to="/" 
-              $isActive={location.pathname === '/'}
+              $isActive={false}
               onClick={(e) => {
                 e.preventDefault();
                 scrollToSection('about');

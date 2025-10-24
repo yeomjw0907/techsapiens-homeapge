@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { createInquiry } from '../lib/supabase';
 
 const ModalOverlay = styled(motion.div)`
   position: fixed;
@@ -196,21 +197,40 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // 실제로는 API 호출을 해야 하지만, 여기서는 시뮬레이션
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    console.log('Form submitted:', formData);
-    setIsSubmitting(false);
-    onClose();
-    
-    // 폼 초기화
-    setFormData({
-      name: '',
-      company: '',
-      email: '',
-      phone: '',
-      message: ''
-    });
+    try {
+      // Supabase에 문의사항 저장
+      const inquiryData = {
+        name: formData.name,
+        company: formData.company,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+        status: 'pending'
+      };
+      
+      await createInquiry(inquiryData);
+      
+      console.log('Inquiry submitted successfully:', inquiryData);
+      setIsSubmitting(false);
+      onClose();
+      
+      // 폼 초기화
+      setFormData({
+        name: '',
+        company: '',
+        email: '',
+        phone: '',
+        message: ''
+      });
+      
+      // 성공 메시지 (선택사항)
+      alert('문의사항이 성공적으로 전송되었습니다. 빠른 시일 내에 연락드리겠습니다.');
+      
+    } catch (error) {
+      console.error('Error submitting inquiry:', error);
+      setIsSubmitting(false);
+      alert('문의사항 전송 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
   };
 
   const handleOverlayClick = (e: React.MouseEvent) => {

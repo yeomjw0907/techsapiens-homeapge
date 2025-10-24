@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import Footer from '../components/Footer';
+import { getProjects, Project } from '../lib/supabase';
 
 const ProjectPageContainer = styled.div`
   min-height: 100vh;
@@ -212,10 +214,27 @@ const AchievementItem = styled.li`
 
 const ProjectPage: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState('전체');
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const filters = ['전체', '신규', '유지보수', '컨설팅', '구축', '개발', '서버 관리'];
 
-  const projects = [
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await getProjects();
+        setProjects(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  const sampleProjects = [
     {
       id: 1,
       title: '대형 유통사 통합 ERP 시스템 구축',
@@ -347,46 +366,51 @@ const ProjectPage: React.FC = () => {
         </FilterSection>
 
         <ProjectGrid>
-          {filteredProjects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <Link to={`/projects/${project.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                <ProjectImage>
-                  {project.icon}
-                </ProjectImage>
-                <ProjectContent>
-                  <ProjectTitle>{project.title}</ProjectTitle>
-                  <ProjectClient>{project.client}</ProjectClient>
-                  <ProjectDate>{project.date}</ProjectDate>
-                  <ProjectDescription>{project.description}</ProjectDescription>
-                  
-                  <TechStack>
-                    {project.techStack.map((tech, techIndex) => (
-                      <TechTag key={techIndex}>{tech}</TechTag>
-                    ))}
-                  </TechStack>
-
-                  <Achievements>
-                    <AchievementTitle>주요 성과</AchievementTitle>
-                    <AchievementList>
-                      {project.achievements.map((achievement, achievementIndex) => (
-                        <AchievementItem key={achievementIndex}>
-                          {achievement}
-                        </AchievementItem>
+          {loading ? (
+            <div>로딩 중...</div>
+          ) : (
+            filteredProjects.map((project, index) => (
+              <ProjectCard
+                key={project.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <Link to={`/projects/${project.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <ProjectImage>
+                    {project.icon || '📊'}
+                  </ProjectImage>
+                  <ProjectContent>
+                    <ProjectTitle>{project.title}</ProjectTitle>
+                    <ProjectClient>{project.client}</ProjectClient>
+                    <ProjectDate>{project.start_date}</ProjectDate>
+                    <ProjectDescription>{project.description}</ProjectDescription>
+                    
+                    <TechStack>
+                      {project.tech_stack?.map((tech, techIndex) => (
+                        <TechTag key={techIndex}>{tech}</TechTag>
                       ))}
-                    </AchievementList>
-                  </Achievements>
-                </ProjectContent>
-              </Link>
-            </ProjectCard>
-          ))}
+                    </TechStack>
+
+                    <Achievements>
+                      <AchievementTitle>주요 성과</AchievementTitle>
+                      <AchievementList>
+                        {project.achievements?.map((achievement, achievementIndex) => (
+                          <AchievementItem key={achievementIndex}>
+                            {achievement}
+                          </AchievementItem>
+                        ))}
+                      </AchievementList>
+                    </Achievements>
+                  </ProjectContent>
+                </Link>
+              </ProjectCard>
+            ))
+          )}
         </ProjectGrid>
       </Container>
+      <Footer />
     </ProjectPageContainer>
   );
 };

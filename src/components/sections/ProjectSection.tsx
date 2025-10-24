@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { getProjects, Project } from '../../lib/supabase';
 
 const ProjectContainer = styled.section`
   padding: 6rem 0;
@@ -196,50 +197,24 @@ const ButtonLink = styled(Link)`
 `;
 
 const ProjectSection: React.FC = () => {
-  const projects = [
-    {
-      id: 1,
-      title: '대형 유통사 통합 ERP 시스템 구축',
-      client: 'A유통그룹',
-      date: '2024.01 - 2024.08',
-      description: '선사 사원리를 위한 한 ERP 시스설계 구축 시 내이너 마이그레이션 및 통합.',
-      techStack: ['Java', 'Spring Boot', 'Oracle', 'Redis', 'Kafka'],
-      achievements: [
-        '업무 효율 40% 향상',
-        '데이터 처리 속도 3배 개선',
-        '운영 비용 30% 절감'
-      ],
-      icon: '📊'
-    },
-    {
-      id: 2,
-      title: '금융권 클라우드 인프라 구축 및 운영',
-      client: 'B금융지주',
-      date: '2023.06 -',
-      description: 'AWS 기반 고사성어라 구축 및 24/7 어린 시비스 시공.',
-      techStack: ['AWS', 'Kubernetes', 'Docker', 'Terraform', 'Prometheus'],
-      achievements: [
-        '시스템 가용률 99.99% 달성',
-        '장애 대응 시간 80% 단축',
-        '인프라 비용 25% 절감'
-      ],
-      icon: '☁️'
-    },
-    {
-      id: 3,
-      title: '제조사 스마트팩토리 웹 플랫폼 개발',
-      client: 'C제조사',
-      date: '2023.09 - 2024.03',
-      description: '실시간 생산 현황 모니터링 및 설비 관리를 위한 길 기반 플랫폼 개발.',
-      techStack: ['Next.js', 'Node.js', 'TypeScript', 'PostgreSQL'],
-      achievements: [
-        '생산성 35% 향상',
-        '불량률 50% 감소',
-        '실시간 데이터 가시화'
-      ],
-      icon: '🏭'
-    }
-  ];
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await getProjects();
+        // 메인페이지에서는 최대 3개만 표시
+        setProjects(data.slice(0, 3));
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   return (
     <ProjectContainer>
@@ -262,43 +237,47 @@ const ProjectSection: React.FC = () => {
         </SectionDescription>
 
         <ProjectGrid>
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <ProjectImage>
-                {project.icon}
-              </ProjectImage>
-              <ProjectContent>
-                <ProjectTitle>{project.title}</ProjectTitle>
-                <ProjectClient>{project.client}</ProjectClient>
-                <ProjectDate>{project.date}</ProjectDate>
-                <ProjectDescription>{project.description}</ProjectDescription>
-                
-                <TechStack>
-                  {project.techStack.map((tech, techIndex) => (
-                    <TechTag key={techIndex}>{tech}</TechTag>
-                  ))}
-                </TechStack>
-
-                <Achievements>
-                  <AchievementTitle>주요 성과</AchievementTitle>
-                  <AchievementList>
-                    {project.achievements.map((achievement, achievementIndex) => (
-                      <AchievementItem key={achievementIndex}>
-                        {achievement}
-                      </AchievementItem>
+          {loading ? (
+            <div>로딩 중...</div>
+          ) : (
+            projects.map((project, index) => (
+              <ProjectCard
+                key={project.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <ProjectImage>
+                  {project.icon || '📊'}
+                </ProjectImage>
+                <ProjectContent>
+                  <ProjectTitle>{project.title}</ProjectTitle>
+                  <ProjectClient>{project.client}</ProjectClient>
+                  <ProjectDate>{project.start_date}</ProjectDate>
+                  <ProjectDescription>{project.description}</ProjectDescription>
+                  
+                  <TechStack>
+                    {project.tech_stack?.map((tech, techIndex) => (
+                      <TechTag key={techIndex}>{tech}</TechTag>
                     ))}
-                  </AchievementList>
-                </Achievements>
-              </ProjectContent>
-            </ProjectCard>
-          ))}
+                  </TechStack>
+
+                  <Achievements>
+                    <AchievementTitle>주요 성과</AchievementTitle>
+                    <AchievementList>
+                      {project.achievements?.map((achievement, achievementIndex) => (
+                        <AchievementItem key={achievementIndex}>
+                          {achievement}
+                        </AchievementItem>
+                      ))}
+                    </AchievementList>
+                  </Achievements>
+                </ProjectContent>
+              </ProjectCard>
+            ))
+          )}
         </ProjectGrid>
 
         <ViewAllButton

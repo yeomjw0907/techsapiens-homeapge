@@ -100,9 +100,14 @@ const ProjectCard = styled(motion.div)`
   }
 `;
 
-const ProjectImage = styled.div`
+const ProjectImage = styled.div<{ $thumbnailUrl?: string }>`
   height: 200px;
-  background: ${props => props.theme.colors.surfaceLight};
+  background: ${props => props.$thumbnailUrl 
+    ? `url(${props.$thumbnailUrl})` 
+    : props.theme.colors.surfaceLight
+  };
+  background-size: cover;
+  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,7 +115,7 @@ const ProjectImage = styled.div`
   color: ${props => props.theme.colors.textSecondary};
   position: relative;
   overflow: hidden;
-
+  
   &::before {
     content: '';
     position: absolute;
@@ -118,8 +123,17 @@ const ProjectImage = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, transparent 30%, rgba(99, 102, 241, 0.1) 50%, transparent 70%);
-    animation: shimmer 2s infinite;
+    background: ${props => props.$thumbnailUrl 
+      ? 'rgba(0, 0, 0, 0.3)' 
+      : 'linear-gradient(45deg, transparent 30%, rgba(99, 102, 241, 0.1) 50%, transparent 70%)'
+    };
+    animation: ${props => props.$thumbnailUrl ? 'none' : 'shimmer 2s infinite'};
+    z-index: 1;
+  }
+  
+  > * {
+    position: relative;
+    z-index: 2;
   }
 
   @keyframes shimmer {
@@ -378,9 +392,9 @@ const ProjectPage: React.FC = () => {
                 whileHover={{ scale: 1.02 }}
               >
                 <Link to={`/projects/${project.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <ProjectImage>
-                    {project.icon || '📊'}
-                  </ProjectImage>
+        <ProjectImage $thumbnailUrl={project.thumbnail_url}>
+          {!project.thumbnail_url && (project.icon || '📊')}
+        </ProjectImage>
                   <ProjectContent>
                     <ProjectTitle>{project.title}</ProjectTitle>
                     <ProjectClient>{project.client}</ProjectClient>

@@ -487,6 +487,43 @@ const SubmitButton = styled.button`
   }
 `;
 
+const CategoryGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+`;
+
+const CategoryButton = styled.button<{ $selected: boolean }>`
+  padding: 0.5rem 1rem;
+  border: 1px solid ${props => props.$selected ? props.theme.colors.primary : props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  background: ${props => props.$selected ? props.theme.colors.primary : props.theme.colors.background};
+  color: ${props => props.$selected ? 'white' : props.theme.colors.textSecondary};
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: ${props => props.theme.colors.primary};
+    background: ${props => props.$selected ? props.theme.colors.primary : props.theme.colors.surfaceLight};
+    color: white;
+  }
+`;
+
+const CATEGORIES = [
+  '웹 개발',
+  '모바일 앱',
+  '시스템 구축',
+  '서버 관리',
+  '데이터베이스',
+  'AI/ML',
+  '클라우드',
+  '보안',
+  '기타'
+];
+
 const AdminPage: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState<'projects' | 'inquiries'>('projects');
@@ -509,7 +546,7 @@ const AdminPage: React.FC = () => {
     end_date: '',
     tech_stack: [] as string[],
     achievements: [] as string[],
-    icon: '',
+    thumbnail_url: '',
     category: ''
   });
 
@@ -649,6 +686,13 @@ const AdminPage: React.FC = () => {
     }));
   };
 
+  const handleCategorySelect = (category: string) => {
+    setNewProject(prev => ({
+      ...prev,
+      category: category
+    }));
+  };
+
   const handleEditProject = (project: Project) => {
     setEditingProject(project);
     setNewProject({
@@ -660,7 +704,7 @@ const AdminPage: React.FC = () => {
       end_date: project.end_date || '',
       tech_stack: project.tech_stack || [],
       achievements: project.achievements || [],
-      icon: project.icon || '',
+      thumbnail_url: project.thumbnail_url || '',
       category: project.category || ''
     });
     setShowEditProject(true);
@@ -690,7 +734,7 @@ const AdminPage: React.FC = () => {
         end_date: '',
         tech_stack: [],
         achievements: [],
-        icon: '',
+        thumbnail_url: '',
         category: ''
       });
       alert('프로젝트가 성공적으로 수정되었습니다.');
@@ -938,25 +982,30 @@ const AdminPage: React.FC = () => {
                 </FormGroup>
                 <FormGroup>
                   <Label>카테고리</Label>
-                  <ModalInput
-                    type="text"
-                    name="category"
-                    value={newProject.category}
-                    onChange={handleProjectInputChange}
-                    placeholder="예: 웹 개발, 모바일 앱, 시스템 구축"
-                  />
+                  <CategoryGrid>
+                    {CATEGORIES.map(category => (
+                      <CategoryButton
+                        key={category}
+                        type="button"
+                        $selected={newProject.category === category}
+                        onClick={() => handleCategorySelect(category)}
+                      >
+                        {category}
+                      </CategoryButton>
+                    ))}
+                  </CategoryGrid>
                 </FormGroup>
               </FormRow>
 
               <FormRow>
                 <FormGroup>
-                  <Label>아이콘</Label>
+                  <Label>썸네일 이미지 URL</Label>
                   <ModalInput
-                    type="text"
-                    name="icon"
-                    value={newProject.icon}
+                    type="url"
+                    name="thumbnail_url"
+                    value={newProject.thumbnail_url}
                     onChange={handleProjectInputChange}
-                    placeholder="예: 📊, 🚀, 💻"
+                    placeholder="https://example.com/image.jpg"
                   />
                 </FormGroup>
                 <FormGroup>
@@ -1071,25 +1120,30 @@ const AdminPage: React.FC = () => {
                 </FormGroup>
                 <FormGroup>
                   <Label>카테고리</Label>
-                  <ModalInput
-                    type="text"
-                    name="category"
-                    value={newProject.category}
-                    onChange={handleProjectInputChange}
-                    placeholder="예: 웹 개발, 모바일 앱, 시스템 구축"
-                  />
+                  <CategoryGrid>
+                    {CATEGORIES.map(category => (
+                      <CategoryButton
+                        key={category}
+                        type="button"
+                        $selected={newProject.category === category}
+                        onClick={() => handleCategorySelect(category)}
+                      >
+                        {category}
+                      </CategoryButton>
+                    ))}
+                  </CategoryGrid>
                 </FormGroup>
               </FormRow>
 
               <FormRow>
                 <FormGroup>
-                  <Label>아이콘</Label>
+                  <Label>썸네일 이미지 URL</Label>
                   <ModalInput
-                    type="text"
-                    name="icon"
-                    value={newProject.icon}
+                    type="url"
+                    name="thumbnail_url"
+                    value={newProject.thumbnail_url}
                     onChange={handleProjectInputChange}
-                    placeholder="예: 📊, 🚀, 💻"
+                    placeholder="https://example.com/image.jpg"
                   />
                 </FormGroup>
                 <FormGroup>

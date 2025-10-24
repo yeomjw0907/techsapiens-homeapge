@@ -63,9 +63,14 @@ const ProjectCard = styled(motion.div)`
   }
 `;
 
-const ProjectImage = styled.div`
+const ProjectImage = styled.div<{ $thumbnailUrl?: string }>`
   height: 200px;
-  background: ${props => props.theme.colors.surfaceLight};
+  background: ${props => props.$thumbnailUrl 
+    ? `url(${props.$thumbnailUrl})` 
+    : props.theme.colors.surfaceLight
+  };
+  background-size: cover;
+  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,6 +78,25 @@ const ProjectImage = styled.div`
   color: ${props => props.theme.colors.textSecondary};
   position: relative;
   overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${props => props.$thumbnailUrl 
+      ? 'rgba(0, 0, 0, 0.3)' 
+      : 'transparent'
+    };
+    z-index: 1;
+  }
+  
+  > * {
+    position: relative;
+    z-index: 2;
+  }
 
   &::before {
     content: '';
@@ -249,9 +273,9 @@ const ProjectSection: React.FC = () => {
                 viewport={{ once: true }}
                 whileHover={{ scale: 1.02 }}
               >
-                <ProjectImage>
-                  {project.icon || '📊'}
-                </ProjectImage>
+        <ProjectImage $thumbnailUrl={project.thumbnail_url}>
+          {!project.thumbnail_url && (project.icon || '📊')}
+        </ProjectImage>
                 <ProjectContent>
                   <ProjectTitle>{project.title}</ProjectTitle>
                   <ProjectClient>{project.client}</ProjectClient>

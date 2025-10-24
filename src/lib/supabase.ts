@@ -18,7 +18,7 @@ export interface Project {
   tech_stack: string[];
   achievements: string[];
   image_url?: string;
-  icon?: string;
+  thumbnail_url?: string;
   category?: string;
   created_at: string;
   updated_at: string;

@@ -13,7 +13,7 @@ CREATE TABLE projects (
   tech_stack TEXT[] NOT NULL DEFAULT '{}',
   achievements TEXT[] NOT NULL DEFAULT '{}',
   image_url VARCHAR(500),
-  icon VARCHAR(10),
+  thumbnail_url VARCHAR(500),
   category VARCHAR(50),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -50,10 +50,10 @@ INSERT INTO admin_users (username, email, password)
 VALUES ('admin', 'admin@techsapiens.com', 'admin123');
 
 -- 샘플 프로젝트 데이터
-INSERT INTO projects (title, description, client, status, start_date, end_date, tech_stack, achievements, icon, category) VALUES
-('대형 유통사 통합 ERP 시스템 구축', '선사 사원리를 위한 한 ERP 시스설계 구축 시 내이너 마이그레이션 및 통합.', 'A유통그룹', 'active', '2024-01-01', '2024-08-31', ARRAY['Java', 'Spring Boot', 'Oracle', 'Redis', 'Kafka'], ARRAY['업무 효율 40% 향상', '데이터 처리 속도 3배 개선', '운영 비용 30% 절감'], '📊', '구축'),
-('금융권 클라우드 인프라 구축 및 운영', 'AWS 기반 고사성어라 구축 및 24/7 어린 시비스 시공.', 'B금융지주', 'completed', '2023-06-01', NULL, ARRAY['AWS', 'Kubernetes', 'Docker', 'Terraform', 'Prometheus'], ARRAY['시스템 가용률 99.99% 달성', '장애 대응 시간 80% 단축', '인프라 비용 25% 절감'], '☁️', '서버 관리'),
-('제조사 스마트팩토리 웹 플랫폼 개발', '실시간 생산 현황 모니터링 및 설비 관리를 위한 길 기반 플랫폼 개발.', 'C제조사', 'pending', '2023-09-01', '2024-03-31', ARRAY['Next.js', 'Node.js', 'TypeScript', 'PostgreSQL'], ARRAY['생산성 35% 향상', '불량률 50% 감소', '실시간 데이터 가시화'], '🏭', '개발');
+INSERT INTO projects (title, description, client, status, start_date, end_date, tech_stack, achievements, thumbnail_url, category) VALUES
+('대형 유통사 통합 ERP 시스템 구축', '선사 사원리를 위한 한 ERP 시스설계 구축 시 내이너 마이그레이션 및 통합.', 'A유통그룹', 'active', '2024-01-01', '2024-08-31', ARRAY['Java', 'Spring Boot', 'Oracle', 'Redis', 'Kafka'], ARRAY['업무 효율 40% 향상', '데이터 처리 속도 3배 개선', '운영 비용 30% 절감'], 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop', '구축'),
+('금융권 클라우드 인프라 구축 및 운영', 'AWS 기반 고사성어라 구축 및 24/7 어린 시비스 시공.', 'B금융지주', 'completed', '2023-06-01', NULL, ARRAY['AWS', 'Kubernetes', 'Docker', 'Terraform', 'Prometheus'], ARRAY['시스템 가용률 99.99% 달성', '장애 대응 시간 80% 단축', '인프라 비용 25% 절감'], 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=450&fit=crop', '서버 관리'),
+('제조사 스마트팩토리 웹 플랫폼 개발', '실시간 생산 현황 모니터링 및 설비 관리를 위한 길 기반 플랫폼 개발.', 'C제조사', 'pending', '2023-09-01', '2024-03-31', ARRAY['Next.js', 'Node.js', 'TypeScript', 'PostgreSQL'], ARRAY['생산성 35% 향상', '불량률 50% 감소', '실시간 데이터 가시화'], 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=450&fit=crop', '개발');
 
 -- 샘플 문의사항 데이터
 INSERT INTO inquiries (name, company, email, phone, message, project_type, budget, timeline, privacy_agreement, status) VALUES

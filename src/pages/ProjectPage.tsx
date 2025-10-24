@@ -289,7 +289,7 @@ const ProjectPage: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const filters = ['전체', '신규', '유지보수', '컨설팅', '구축', '개발', '서버 관리'];
+  const filters = ['전체', '신규', '유지보수', '컨설팅', '구축', '개발', '서버 관리', '기타'];
 
   useEffect(() => {
     const fetchProjects = async () => {

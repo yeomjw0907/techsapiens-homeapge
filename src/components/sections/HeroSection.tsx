@@ -6,10 +6,12 @@ const HeroContainer = styled.section`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: relative;
   background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
   overflow: hidden;
-  padding-top: 80px;
+  padding: 80px 2rem 2rem;
 `;
 
 const BackgroundPattern = styled.div<{ $mouseX: number; $mouseY: number }>`
@@ -38,228 +40,133 @@ const BackgroundPattern = styled.div<{ $mouseX: number; $mouseY: number }>`
 `;
 
 const MainHero = styled.div`
-  flex: 1;
+  width: 100%;
+  max-width: 800px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   position: relative;
   z-index: 2;
 `;
 
-const Content = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
-  align-items: center;
-
-  @media (max-width: ${props => props.theme.breakpoints.tablet}) {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    text-align: center;
-  }
-`;
-
-const TextContent = styled.div`
+const ChatContainer = styled.div`
+  width: 100%;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  align-items: center;
+  gap: 2rem;
 `;
 
-const Title = styled(motion.h1)`
-  font-size: 3.5rem;
-  font-weight: 800;
-  line-height: 1.2;
+const WelcomeText = styled(motion.h1)`
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: white;
+  text-align: center;
   margin-bottom: 1rem;
-
-  @media (max-width: ${props => props.theme.breakpoints.tablet}) {
-    font-size: 2.5rem;
-  }
 
   @media (max-width: ${props => props.theme.breakpoints.mobile}) {
     font-size: 2rem;
   }
 `;
 
-const TitleLine = styled.span`
-  display: block;
-  color: white;
-`;
-
-const TitleHighlight = styled.span`
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-`;
-
 const Subtitle = styled(motion.p)`
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   color: ${props => props.theme.colors.textSecondary};
-  margin-bottom: 2rem;
+  text-align: center;
+  margin-bottom: 3rem;
   line-height: 1.6;
 `;
 
-const Description = styled(motion.p)`
-  font-size: 1.1rem;
-  color: ${props => props.theme.colors.textSecondary};
-  line-height: 1.7;
-  margin-bottom: 2rem;
-`;
-
-const ButtonGroup = styled(motion.div)`
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-
-  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
-    justify-content: center;
-  }
-`;
-
-const PrimaryButton = styled(motion.button)`
-  background: ${props => props.theme.colors.gradient};
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: ${props => props.theme.borderRadius.md};
-  font-weight: 600;
-  font-size: 1.1rem;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: ${props => props.theme.shadows.lg};
-  }
-`;
-
-const SecondaryButton = styled(motion.button)`
-  background: transparent;
-  color: white;
-  padding: 1rem 2rem;
-  border-radius: ${props => props.theme.borderRadius.md};
-  font-weight: 600;
-  font-size: 1.1rem;
-  border: 1px solid ${props => props.theme.colors.border};
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: ${props => props.theme.colors.surfaceLight};
-    border-color: ${props => props.theme.colors.primary};
-  }
-`;
-
-const VisualContent = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const PromptContainer = styled(motion.div)`
+  width: 100%;
   position: relative;
 `;
 
-const ServiceIcon = styled(motion.div)`
-  width: 200px;
-  height: 200px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(6, 182, 212, 0.3);
-  
-  &::before {
-    content: '⚙️';
-    font-size: 4rem;
-    filter: grayscale(0) brightness(1.2);
-  }
-`;
-
-const CardsSection = styled.div`
-  padding: 4rem 0;
-  position: relative;
-  z-index: 2;
-`;
-
-const CardsContainer = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2rem;
-
-  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-`;
-
-const FeatureCard = styled(motion.div)`
+const PromptInput = styled.input`
+  width: 100%;
+  padding: 1rem 1.5rem;
   background: ${props => props.theme.colors.surface};
   border: 1px solid ${props => props.theme.colors.border};
   border-radius: ${props => props.theme.borderRadius.lg};
-  padding: 2rem;
-  position: relative;
-  overflow: hidden;
+  color: white;
+  font-size: 1rem;
+  outline: none;
   transition: all 0.3s ease;
 
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: ${props => props.theme.shadows.xl};
+  &:focus {
+    border-color: ${props => props.theme.colors.primary};
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  &::placeholder {
+    color: ${props => props.theme.colors.textSecondary};
   }
 `;
 
-const CardHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-`;
-
-const CardTitle = styled.h3`
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
-  margin: 0;
-`;
-
-const CardIcon = styled.div<{ $color: string }>`
-  width: 60px;
-  height: 60px;
-  background: ${props => props.$color};
-  border-radius: ${props => props.theme.borderRadius.lg};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-`;
-
-const CardDescription = styled.p`
-  color: ${props => props.theme.colors.textSecondary};
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-`;
-
-const CardArrow = styled.div`
-  width: 40px;
-  height: 40px;
+const SendButton = styled(motion.button)`
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
   background: ${props => props.theme.colors.primary};
-  border-radius: 50%;
+  color: white;
+  border: none;
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: 0.5rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 1.2rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: ${props => props.theme.colors.primary};
+    transform: translateY(-50%) scale(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const SuggestionContainer = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+`;
+
+const SuggestionCard = styled(motion.div)`
+  background: ${props => props.theme.colors.surface};
+  border: 1px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    transform: scale(1.1);
+    border-color: ${props => props.theme.colors.primary};
+    transform: translateY(-2px);
   }
 `;
+
+const SuggestionTitle = styled.h3`
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+`;
+
+const SuggestionDescription = styled.p`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: 0.9rem;
+  line-height: 1.4;
+`;
+
+// 사용하지 않는 스타일 컴포넌트들 제거됨
 
 interface HeroSectionProps {
   onContactClick: () => void;
@@ -267,6 +174,8 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
   const [mousePosition, setMousePosition] = useState({ x: 50, y: 50 });
+  const [prompt, setPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -275,15 +184,20 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     setMousePosition({ x, y });
   };
 
-  const scrollToServices = () => {
-    const element = document.getElementById('services');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const handlePromptSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!prompt.trim()) return;
+    
+    setIsGenerating(true);
+    // 여기서 제안서 생성 로직을 구현할 예정
+    setTimeout(() => {
+      setIsGenerating(false);
+      onContactClick(); // 임시로 문의 모달 열기
+    }, 2000);
   };
 
-  const handleContactClick = () => {
-    onContactClick();
+  const handleSuggestionClick = (suggestion: string) => {
+    setPrompt(suggestion);
   };
 
   const TypingText = styled.span`
@@ -318,99 +232,89 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
     );
   };
 
+  const suggestions = [
+    {
+      title: "웹사이트 개발",
+      description: "반응형 웹사이트나 웹 애플리케이션 개발이 필요하신가요?"
+    },
+    {
+      title: "모바일 앱 개발",
+      description: "iOS/Android 앱 개발 또는 크로스플랫폼 앱 개발을 원하시나요?"
+    },
+    {
+      title: "시스템 구축",
+      description: "ERP, CRM 등 기업용 시스템 구축이 필요하신가요?"
+    },
+    {
+      title: "클라우드 마이그레이션",
+      description: "기존 시스템을 클라우드로 이전하고 싶으신가요?"
+    }
+  ];
+
   return (
     <HeroContainer id="home" onMouseMove={handleMouseMove}>
       <BackgroundPattern $mouseX={mousePosition.x} $mouseY={mousePosition.y} />
       <MainHero>
-        <Content>
-          <TextContent>
-            <Title
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <TitleLine>전문가의 완성도</TitleLine>
-              <TitleLine>
-                IT 전문  <TitleHighlight>테크사피엔스</TitleHighlight>
-              </TitleLine>
-            </Title>
-            <Subtitle
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <TypingAnimation text="검증된 실력, 테크사피엔스와 함께하세요" speed={80} />
-            </Subtitle>
-            <Description
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-            </Description>
-            <ButtonGroup
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              <PrimaryButton
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={scrollToServices}
-              >
-                서비스 보기
-              </PrimaryButton>
-              <SecondaryButton
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleContactClick}
-              >
-                문의하기
-              </SecondaryButton>
-            </ButtonGroup>
-          </TextContent>
-          <VisualContent>
-            {/* 아이콘 제거 */}
-          </VisualContent>
-        </Content>
-      </MainHero>
-      <CardsSection>
-        <CardsContainer>
-          <FeatureCard
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
+        <ChatContainer>
+          <WelcomeText
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
           >
-            <CardHeader>
-              <CardTitle>시스템 구축</CardTitle>
-              <CardIcon $color="linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)">
-                🏗️
-              </CardIcon>
-            </CardHeader>
-            <CardDescription>
-              기업의 비즈니스 요구사항에 맞는 맞춤형 시스템을 구축하여 업무 효율성을 극대화합니다.
-            </CardDescription>
-            <CardArrow>→</CardArrow>
-          </FeatureCard>
-          <FeatureCard
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            안녕하세요! 테크사피엔스입니다 👋
+          </WelcomeText>
+          
+          <Subtitle
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
           >
-            <CardHeader>
-              <CardTitle>클라우드 솔루션</CardTitle>
-              <CardIcon $color="linear-gradient(135deg, #10b981 0%, #059669 100%)">
-                ☁️
-              </CardIcon>
-            </CardHeader>
-            <CardDescription>
-              안정적이고 확장 가능한 클라우드 인프라 구축으로 비용 효율성과 성능을 동시에 확보합니다.
-            </CardDescription>
-            <CardArrow>→</CardArrow>
-          </FeatureCard>
-        </CardsContainer>
-      </CardsSection>
+            필요하신 IT 서비스를 설명해주세요. 맞춤형 제안서를 만들어드리겠습니다.
+          </Subtitle>
+
+          <PromptContainer
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <form onSubmit={handlePromptSubmit}>
+              <PromptInput
+                type="text"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder="예: 온라인 쇼핑몰 개발이 필요합니다. 사용자 관리, 결제 시스템, 상품 관리 기능이 포함되어야 합니다."
+                disabled={isGenerating}
+              />
+              <SendButton
+                type="submit"
+                disabled={!prompt.trim() || isGenerating}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {isGenerating ? '⏳' : '→'}
+              </SendButton>
+            </form>
+          </PromptContainer>
+
+          <SuggestionContainer
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            {suggestions.map((suggestion, index) => (
+              <SuggestionCard
+                key={index}
+                onClick={() => handleSuggestionClick(suggestion.title)}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <SuggestionTitle>{suggestion.title}</SuggestionTitle>
+                <SuggestionDescription>{suggestion.description}</SuggestionDescription>
+              </SuggestionCard>
+            ))}
+          </SuggestionContainer>
+        </ChatContainer>
+      </MainHero>
     </HeroContainer>
   );
 };

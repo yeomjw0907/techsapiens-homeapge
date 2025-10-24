@@ -57,12 +57,17 @@ const FilterButton = styled(motion.button)<{ $isActive: boolean }>`
   cursor: pointer;
   transition: all 0.3s ease;
   background: ${props => props.$isActive ? props.theme.colors.gradient : props.theme.colors.surface};
-  color: white;
+  color: ${props => props.$isActive ? 'white' : props.theme.colors.text};
   border: 1px solid ${props => props.$isActive ? 'transparent' : props.theme.colors.border};
 
   &:hover {
     background: ${props => props.$isActive ? props.theme.colors.gradient : props.theme.colors.surfaceLight};
     transform: translateY(-2px);
+  }
+
+  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
   }
 `;
 
@@ -71,6 +76,11 @@ const ProjectGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 2rem;
   margin-bottom: 4rem;
+
+  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 `;
 
 const ProjectCard = styled(motion.div)`

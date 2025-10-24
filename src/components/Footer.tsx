@@ -25,6 +25,11 @@ const FooterContent = styled.div`
     gap: 2rem;
     text-align: center;
   }
+
+  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 `;
 
 const CompanyInfo = styled.div`
@@ -64,6 +69,10 @@ const FooterSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+
+  @media (max-width: ${props => props.theme.breakpoints.mobile}) {
+    display: none;
+  }
 `;
 
 const SectionTitle = styled.h3`

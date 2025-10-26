@@ -6,6 +6,28 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
+// Supabase 연결 테스트 함수
+export const testSupabaseConnection = async (): Promise<boolean> => {
+  try {
+    console.log('Testing Supabase connection...');
+    const { data, error } = await supabase
+      .from('inquiries')
+      .select('count')
+      .limit(1);
+    
+    if (error) {
+      console.error('Supabase connection test failed:', error);
+      return false;
+    }
+    
+    console.log('Supabase connection test successful');
+    return true;
+  } catch (error) {
+    console.error('Supabase connection test error:', error);
+    return false;
+  }
+};
+
 // 데이터베이스 타입 정의
 export interface Project {
   id: number;
@@ -125,18 +147,38 @@ export const getInquiries = async (): Promise<Inquiry[]> => {
 };
 
 export const createInquiry = async (inquiry: Omit<Inquiry, 'id' | 'created_at' | 'updated_at'>): Promise<Inquiry | null> => {
-  const { data, error } = await supabase
-    .from('inquiries')
-    .insert([inquiry])
-    .select()
-    .single();
+  try {
+    console.log('Attempting to create inquiry:', inquiry);
+    
+    // 먼저 연결 테스트
+    const isConnected = await testSupabaseConnection();
+    if (!isConnected) {
+      throw new Error('데이터베이스 연결에 실패했습니다. 네트워크 연결을 확인해주세요.');
+    }
+    
+    const { data, error } = await supabase
+      .from('inquiries')
+      .insert([inquiry])
+      .select()
+      .single();
 
-  if (error) {
+    if (error) {
+      console.error('Supabase error creating inquiry:', error);
+      console.error('Error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+      throw new Error(`데이터베이스 오류: ${error.message}`);
+    }
+
+    console.log('Inquiry created successfully:', data);
+    return data;
+  } catch (error) {
     console.error('Error creating inquiry:', error);
-    return null;
+    throw error;
   }
-
-  return data;
 };
 
 // 인터뷰 데이터를 저장하는 함수
@@ -152,20 +194,29 @@ export const createInterviewInquiry = async (interviewData: {
   phone: string;
   privacyAgreement: boolean;
 }): Promise<Inquiry | null> => {
-  const inquiryData = {
-    name: contactData.name,
-    company: contactData.company,
-    email: contactData.email,
-    phone: contactData.phone,
-    project_type: interviewData.projectType,
-    budget: interviewData.budget,
-    timeline: interviewData.timeline,
-    privacy_agreement: contactData.privacyAgreement,
-    status: 'new' as const,
-    message: `프로젝트 유형: ${interviewData.projectType}\n예산: ${interviewData.budget}\n완료 기간: ${interviewData.timeline}\n주요 기능: ${interviewData.features.join(', ')}`
-  };
+  try {
+    console.log('Creating interview inquiry with data:', { interviewData, contactData });
+    
+    const inquiryData = {
+      name: contactData.name,
+      company: contactData.company,
+      email: contactData.email,
+      phone: contactData.phone,
+      project_type: interviewData.projectType,
+      budget: interviewData.budget,
+      timeline: interviewData.timeline,
+      privacy_agreement: contactData.privacyAgreement,
+      status: 'new' as const,
+      message: `프로젝트 유형: ${interviewData.projectType}\n예산: ${interviewData.budget}\n완료 기간: ${interviewData.timeline}\n주요 기능: ${interviewData.features.join(', ')}`
+    };
 
-  return await createInquiry(inquiryData);
+    const result = await createInquiry(inquiryData);
+    console.log('Interview inquiry created successfully:', result);
+    return result;
+  } catch (error) {
+    console.error('Error creating interview inquiry:', error);
+    throw error;
+  }
 };
 
 export const updateInquiry = async (id: number, updates: Partial<Inquiry>): Promise<Inquiry | null> => {

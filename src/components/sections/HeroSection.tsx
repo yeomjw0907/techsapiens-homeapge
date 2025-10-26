@@ -1232,6 +1232,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
 
   const handleFinalRecipeSubmit = async () => {
     try {
+      console.log('Submitting final recipe with data:', { interviewData, recipeData });
+      
       // Supabase에 인터뷰 데이터 저장
       const result = await createInterviewInquiry(interviewData, recipeData);
       
@@ -1246,13 +1248,26 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onContactClick }) => {
           resetToInitialState();
         }, 3000);
       } else {
-        console.error('Failed to save interview inquiry');
-        // 에러 처리 - 사용자에게 알림
-        alert('문의사항 저장에 실패했습니다. 다시 시도해주세요.');
+        console.error('Failed to save interview inquiry - no result returned');
+        alert('문의사항 저장에 실패했습니다. 데이터베이스 연결을 확인해주세요.');
       }
     } catch (error) {
       console.error('Error saving interview inquiry:', error);
-      alert('문의사항 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+      
+      // 더 구체적인 오류 메시지 제공
+      let errorMessage = '문의사항 저장 중 오류가 발생했습니다.';
+      
+      if (error instanceof Error) {
+        if (error.message.includes('데이터베이스 오류')) {
+          errorMessage = '데이터베이스 연결에 문제가 있습니다. 잠시 후 다시 시도해주세요.';
+        } else if (error.message.includes('network')) {
+          errorMessage = '네트워크 연결을 확인해주세요.';
+        } else {
+          errorMessage = `오류: ${error.message}`;
+        }
+      }
+      
+      alert(errorMessage + '\n\n다시 시도해주세요.');
     }
   };
 

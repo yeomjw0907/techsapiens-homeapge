@@ -269,9 +269,13 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
         status: 'new' as const
       };
       
-      await createInquiry(inquiryData);
+      const result = await createInquiry(inquiryData);
       
-      console.log('Inquiry submitted successfully:', inquiryData);
+      if (!result) {
+        throw new Error('문의사항 저장에 실패했습니다.');
+      }
+      
+      console.log('Inquiry submitted successfully:', result);
       setIsSubmitting(false);
       onClose();
       
@@ -336,7 +340,21 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) => {
     } catch (error) {
       console.error('Error submitting inquiry:', error);
       setIsSubmitting(false);
-      alert('문의사항 전송 중 오류가 발생했습니다. 다시 시도해주세요.');
+      
+      // 더 구체적인 오류 메시지 제공
+      let errorMessage = '문의사항 저장에 실패했습니다.';
+      
+      if (error instanceof Error) {
+        if (error.message.includes('데이터베이스 오류')) {
+          errorMessage = '데이터베이스 연결에 문제가 있습니다. 잠시 후 다시 시도해주세요.';
+        } else if (error.message.includes('network')) {
+          errorMessage = '네트워크 연결을 확인해주세요.';
+        } else {
+          errorMessage = `오류: ${error.message}`;
+        }
+      }
+      
+      alert(errorMessage + '\n\n다시 시도해주세요.');
     }
   };
 
